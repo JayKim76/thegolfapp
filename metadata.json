@@ -1,0 +1,7 @@
+{
+  "name": "EagleView Golf Manager",
+  "description": "A premium golf club management application featuring AI-powered grouping and smart course discovery with Google Maps integration.",
+  "requestFramePermissions": [
+    "geolocation"
+  ]
+}
