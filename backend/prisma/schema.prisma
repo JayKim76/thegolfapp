@@ -1,0 +1,68 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Member {
+  id          Int      @id @default(autoincrement())
+  name        String
+  email       String   @unique
+  handicap    Float    @default(0)
+  phone       String?
+  joinDate    DateTime @default(now())
+  status      String   @default("active") // active, inactive, offline
+  profileImage String?
+  badges      String?  // Stored as JSON string for simple badges array
+  type        String   @default("Regular") // 정회원, 준회원 etc.
+  intro       String?
+  gender      String   @default("male") // male, female
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  groups      Group[] 
+  rounds      Round[]
+}
+
+model Schedule {
+  id          Int      @id @default(autoincrement())
+  date        String
+  time        String?
+  courseName  String
+  memo        String?
+  groups      Group[]
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Group {
+  id          Int      @id @default(autoincrement())
+  name        String
+  scheduleId  Int
+  schedule    Schedule @relation(fields: [scheduleId], references: [id], onDelete: Cascade)
+  members     Member[]
+}
+
+model Round {
+  id          Int      @id @default(autoincrement())
+  memberId    Int
+  member      Member   @relation(fields: [memberId], references: [id], onDelete: Cascade)
+  date        String   // YYYY-MM-DD
+  courseName  String?
+  score       Int
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+
+model GolfCourse {
+  id          Int      @id @default(autoincrement())
+  name        String
+  location    String
+  distance    String? // Display string for now
+}

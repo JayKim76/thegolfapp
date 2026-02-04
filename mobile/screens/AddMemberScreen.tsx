@@ -1,42 +1,70 @@
-import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, ScrollView, Image, KeyboardAvoidingView, Platform } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Text, TextInput, TouchableOpacity, ScrollView, Image, KeyboardAvoidingView, Platform, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useRoute } from '@react-navigation/native';
 import { ArrowLeft, Camera, User, Check } from 'lucide-react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { MemberService } from '../services/MemberService';
 
 export default function AddMemberScreen() {
     const navigation = useNavigation<any>();
+    const route = useRoute<any>();
+    const { initialMember } = route.params || {};
 
-    const [name, setName] = useState('');
-    const [handicap, setHandicap] = useState('');
-    const [phone, setPhone] = useState('');
-    const [gender, setGender] = useState('male'); // 'male' or 'female'
-    const [memberType, setMemberType] = useState('정회원'); // '정회원', '준회원', '티칭프로'
+    const isEditMode = !!initialMember;
+
+    const [name, setName] = useState(initialMember?.name || '');
+    const [handicap, setHandicap] = useState(initialMember?.handicap?.toString() || '');
+    const [phone, setPhone] = useState(initialMember?.phone || '');
+    const [gender, setGender] = useState(initialMember?.gender || 'male'); // 'male' or 'female'
+
+    // Map initial type to state
+    const mapTypeToState = (type: string) => {
+        if (!type) return 'regular';
+        if (type === '정회원') return 'regular';
+        if (type === '준회원') return 'associate';
+        if (type === '티칭프로') return 'pro';
+        return 'regular';
+    };
+    const [memberType, setMemberType] = useState(mapTypeToState(initialMember?.type));
+
+    const getMemberTypeLabel = (key: string) => {
+        if (key === 'regular') return '정회원';
+        if (key === 'associate') return '준회원';
+        if (key === 'pro') return '티칭프로';
+        return '정회원';
+    };
 
     const handleSave = async () => {
         // Validation logic here
         if (!name) {
-            alert('이름을 입력해주세요.');
+            Alert.alert('오류', '이름을 입력해주세요.');
             return;
         }
 
+        const typeLabel = getMemberTypeLabel(memberType);
+        const badges = [typeLabel === '티칭프로' ? 'PRO' : '', `HDCP ${handicap}`].filter(Boolean);
+
+        const memberData = {
+            name,
+            handicap: parseFloat(handicap) || 0,
+            phone,
+            gender,
+            type: typeLabel,
+            badges
+        };
+
         try {
-            await MemberService.addMember({
-                name,
-                handicap: parseInt(handicap) || 0,
-                phone,
-                // @ts-ignore
-                gender,
-                // @ts-ignore
-                type: memberType,
-                badges: [memberType === '티칭프로' ? 'PRO' : '', `HDCP ${handicap}`].filter(Boolean)
-            });
-            navigation.goBack();
+            if (isEditMode) {
+                await MemberService.updateMember(initialMember.id, memberData);
+                Alert.alert('성공', '회원 정보가 수정되었습니다.', [{ text: '확인', onPress: () => navigation.goBack() }]);
+            } else {
+                await MemberService.addMember(memberData);
+                Alert.alert('성공', '회원이 등록되었습니다.', [{ text: '확인', onPress: () => navigation.goBack() }]);
+            }
         } catch (error) {
             console.error(error);
-            alert('회원 등록에 실패했습니다.');
+            Alert.alert('오류', isEditMode ? '회원 수정에 실패했습니다.' : '회원 등록에 실패했습니다.');
         }
     };
 
@@ -48,7 +76,7 @@ export default function AddMemberScreen() {
                     <TouchableOpacity onPress={() => navigation.goBack()} className="w-10 h-10 items-center justify-center rounded-full bg-[#1C2A1C]">
                         <ArrowLeft size={24} color="white" />
                     </TouchableOpacity>
-                    <Text className="text-white font-bold text-lg">회원 등록</Text>
+                    <Text className="text-white font-bold text-lg">{isEditMode ? '회원 정보 수정' : '회원 등록'}</Text>
                     <View className="w-10" />
                 </View>
 
@@ -155,7 +183,7 @@ export default function AddMemberScreen() {
                         onPress={handleSave}
                         className="w-full bg-[#00FF00] py-4 rounded-2xl items-center shadow-lg shadow-green-900/50"
                     >
-                        <Text className="text-[#0B120B] font-bold text-lg">저장하기</Text>
+                        <Text className="text-[#0B120B] font-bold text-lg">{isEditMode ? '수정 완료' : '등록 완료'}</Text>
                     </TouchableOpacity>
                 </View>
             </SafeAreaView>

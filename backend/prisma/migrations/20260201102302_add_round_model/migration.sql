@@ -1,0 +1,11 @@
+-- CreateTable
+CREATE TABLE "Round" (
+    "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    "memberId" INTEGER NOT NULL,
+    "date" TEXT NOT NULL,
+    "courseName" TEXT,
+    "score" INTEGER NOT NULL,
+    "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" DATETIME NOT NULL,
+    CONSTRAINT "Round_memberId_fkey" FOREIGN KEY ("memberId") REFERENCES "Member" ("id") ON DELETE CASCADE ON UPDATE CASCADE
+);

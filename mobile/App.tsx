@@ -21,6 +21,7 @@ import AddMemberScreen from './screens/AddMemberScreen';
 import ScheduleScreen from './screens/ScheduleScreen';
 import ScoreInputScreen from './screens/ScoreInputScreen';
 import StatisticsScreen from './screens/StatisticsScreen';
+import ScoreListScreen from './screens/ScoreListScreen';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -165,6 +166,7 @@ export default function App() {
           <Stack.Screen name="AddMember" component={AddMemberScreen} />
           <Stack.Screen name="ScoreInput" component={ScoreInputScreen} />
           <Stack.Screen name="Statistics" component={StatisticsScreen} />
+          <Stack.Screen name="ScoreList" component={ScoreListScreen} />
         </Stack.Navigator>
       </NavigationContainer>
     </SafeAreaProvider>

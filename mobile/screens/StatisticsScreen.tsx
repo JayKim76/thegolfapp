@@ -1,13 +1,16 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, ScrollView, TouchableOpacity, Dimensions } from 'react-native';
+import { View, Text, ScrollView, TouchableOpacity, Dimensions, Image } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { ArrowLeft, TrendingUp, TrendingDown, Target, Award, Calendar } from 'lucide-react-native';
+import { ArrowLeft, TrendingDown, Target, Award, Calendar, User } from 'lucide-react-native';
 import { useNavigation } from '@react-navigation/native';
 import { RoundService, Round } from '../services/RoundService';
+import { MemberService, Member } from '../services/MemberService';
 
 export default function StatisticsScreen() {
     const navigation = useNavigation();
     const [rounds, setRounds] = useState<Round[]>([]);
+    const [members, setMembers] = useState<Member[]>([]);
+    const [selectedMember, setSelectedMember] = useState<Member | null>(null);
     const [stats, setStats] = useState({
         avgScore: 0,
         bestScore: 0,
@@ -16,31 +19,56 @@ export default function StatisticsScreen() {
     });
 
     useEffect(() => {
-        loadData();
+        loadInitialData();
     }, []);
 
-    const loadData = async () => {
-        const history = await RoundService.getRounds();
-        setRounds(history);
+    useEffect(() => {
+        if (selectedMember && rounds.length > 0) {
+            calculateStats(selectedMember);
+        }
+    }, [selectedMember, rounds]);
 
-        if (history.length > 0) {
-            // Calculate Stats (Mock logic for demonstration)
-            // In a real app, filter for the specific user (e.g. memberId 101)
-            const myScores = history.flatMap(r => r.players.filter(p => p.id === 101 || p.name === '김민수')).map(p => p.score);
-
-            if (myScores.length > 0) {
-                const total = myScores.reduce((a, b) => a + b, 0);
-                const avg = total / myScores.length;
-                const min = Math.min(...myScores);
-                const recent = myScores.slice(0, 5).reverse(); // Last 5
-
-                setStats({
-                    avgScore: parseFloat(avg.toFixed(1)),
-                    bestScore: min,
-                    handicap: 12, // Mock
-                    recentTrend: recent,
-                });
+    const loadInitialData = async () => {
+        try {
+            const memberList = await MemberService.getMembers();
+            setMembers(memberList);
+            if (memberList.length > 0) {
+                setSelectedMember(memberList[0]);
             }
+
+            const history = await RoundService.getRounds();
+            setRounds(history);
+        } catch (error) {
+            console.error(error);
+        }
+    };
+
+    const calculateStats = (member: Member) => {
+        // Filter rounds where the selected member played
+        // Matching by NAME for now as IDs might differ between services in this dev phase
+        const myScores = rounds
+            .flatMap(r => r.players.filter(p => p.name === member.name))
+            .map(p => p.score);
+
+        if (myScores.length > 0) {
+            const total = myScores.reduce((a, b) => a + b, 0);
+            const avg = total / myScores.length;
+            const min = Math.min(...myScores);
+            const recent = myScores.slice(0, 5).reverse(); // Last 5
+
+            setStats({
+                avgScore: parseFloat(avg.toFixed(1)),
+                bestScore: min,
+                handicap: member.handicap || 0,
+                recentTrend: recent,
+            });
+        } else {
+            setStats({
+                avgScore: 0,
+                bestScore: 0,
+                handicap: member.handicap || 0,
+                recentTrend: [],
+            });
         }
     };
 
@@ -55,6 +83,32 @@ export default function StatisticsScreen() {
                         <ArrowLeft size={24} color="white" />
                     </TouchableOpacity>
                     <Text className="text-white text-xl font-bold">통계 분석</Text>
+                </View>
+
+                {/* Member Selector */}
+                <View className="mb-4">
+                    <ScrollView
+                        horizontal
+                        showsHorizontalScrollIndicator={false}
+                        contentContainerStyle={{ paddingHorizontal: 24, gap: 12 }}
+                    >
+                        {members.map((member) => (
+                            <TouchableOpacity
+                                key={member.id}
+                                onPress={() => setSelectedMember(member)}
+                                className={`items-center mr-2`}
+                            >
+                                <View className={`w-14 h-14 rounded-full items-center justify-center border-2 overflow-hidden mb-1 ${selectedMember?.id === member.id ? 'border-[#00FF00]' : 'border-[#2A3C2A] bg-[#1C2A1C]'}`}>
+                                    {member.profileImage ? (
+                                        <Image source={{ uri: member.profileImage }} className="w-full h-full" />
+                                    ) : (
+                                        <User size={24} color={selectedMember?.id === member.id ? '#00FF00' : '#6B7280'} />
+                                    )}
+                                </View>
+                                <Text className={`text-xs font-bold ${selectedMember?.id === member.id ? 'text-[#00FF00]' : 'text-gray-400'}`}>{member.name}</Text>
+                            </TouchableOpacity>
+                        ))}
+                    </ScrollView>
                 </View>
 
                 <ScrollView className="flex-1 px-6 pt-2" showsVerticalScrollIndicator={false}>
@@ -78,44 +132,50 @@ export default function StatisticsScreen() {
                     </View>
 
                     {/* Chart Section */}
-                    <View className="bg-[#142314] p-6 rounded-3xl border border-[#2A3C2A] mb-8">
-                        <View className="flex-row justify-between items-center mb-6">
-                            <Text className="text-white text-lg font-bold">최근 5경기 추이</Text>
-                            <View className="flex-row items-center bg-[#1C2A1C] px-3 py-1 rounded-full">
-                                <TrendingDown size={14} color="#00FF00" />
-                                <Text className="text-[#00FF00] text-xs font-bold ml-1">-1.5 타</Text>
+                    {stats.recentTrend.length > 0 ? (
+                        <View className="bg-[#142314] p-6 rounded-3xl border border-[#2A3C2A] mb-8">
+                            <View className="flex-row justify-between items-center mb-6">
+                                <Text className="text-white text-lg font-bold">최근 5경기 추이</Text>
+                                <View className="flex-row items-center bg-[#1C2A1C] px-3 py-1 rounded-full">
+                                    <TrendingDown size={14} color="#00FF00" />
+                                    <Text className="text-[#00FF00] text-xs font-bold ml-1">Analysis</Text>
+                                </View>
+                            </View>
+
+                            {/* Custom Bar Chart */}
+                            <View className="h-48 flex-row items-end justify-between px-2">
+                                {stats.recentTrend.map((score, index) => {
+                                    // Normalize height: max score 120 -> 100% height (roughly)
+                                    // Make it relative to max score in the set for better visualization if needed, but absolute is safer.
+                                    const height = Math.min((score / 120) * 100, 100);
+                                    const isBest = score === Math.min(...stats.recentTrend);
+                                    return (
+                                        <View key={index} className="items-center gap-2 w-8">
+                                            <Text className="text-white font-bold text-xs mb-1">{score}</Text>
+                                            <View
+                                                style={{ height: `${height}%` }}
+                                                className={`w-full rounded-t-lg ${isBest ? 'bg-[#00FF00]' : 'bg-[#2A3C2A]'}`}
+                                            />
+                                            <Text className="text-gray-500 text-[10px]">{index + 1}</Text>
+                                        </View>
+                                    )
+                                })}
                             </View>
                         </View>
-
-                        {/* Custom Bar Chart */}
-                        <View className="h-48 flex-row items-end justify-between px-2">
-                            {stats.recentTrend.length > 0 ? stats.recentTrend.map((score, index) => {
-                                // Normalize height: max score 120 -> 100% height
-                                const height = (score / 120) * 100;
-                                const isBest = score === Math.min(...stats.recentTrend);
-                                return (
-                                    <View key={index} className="items-center gap-2 w-8">
-                                        <Text className="text-white font-bold text-xs mb-1">{score}</Text>
-                                        <View
-                                            style={{ height: `${height}%` }}
-                                            className={`w-full rounded-t-lg ${isBest ? 'bg-[#00FF00]' : 'bg-[#2A3C2A]'}`}
-                                        />
-                                        <Text className="text-gray-500 text-[10px]">{index + 1}</Text>
-                                    </View>
-                                )
-                            }) : (
-                                <Text className="text-gray-500 text-center w-full">데이터가 부족합니다.</Text>
-                            )}
+                    ) : (
+                        <View className="bg-[#142314] p-6 rounded-3xl border border-[#2A3C2A] mb-8 items-center py-10">
+                            <Text className="text-gray-500 font-bold">플레이 기록이 없습니다.</Text>
                         </View>
-                    </View>
+                    )}
 
                     {/* Recent History List */}
-                    <Text className="text-white text-lg font-bold mb-4">상세 기록</Text>
+                    <Text className="text-white text-lg font-bold mb-4">상세 기록 ({selectedMember?.name})</Text>
                     <View className="pb-10 gap-4">
                         {rounds.map((round) => {
                             // Find user's score in this round
-                            const userPlayer = round.players.find(p => p.id === 101 || p.name === '김민수' || p.name === '홍길동'); // Mock Logic
-                            const score = userPlayer ? userPlayer.score : '-';
+                            const userPlayer = round.players.find(p => p.name === selectedMember?.name);
+
+                            if (!userPlayer) return null; // Don't show rounds they didn't play in
 
                             return (
                                 <View key={round.id} className="bg-[#142314] p-5 rounded-2xl border border-[#2A3C2A] flex-row items-center justify-between">
@@ -127,11 +187,14 @@ export default function StatisticsScreen() {
                                         </View>
                                     </View>
                                     <View className="w-12 h-12 bg-[#1C2A1C] rounded-xl items-center justify-center border border-[#2A3C2A]">
-                                        <Text className="text-[#00FF00] font-bold text-lg">{score}</Text>
+                                        <Text className="text-[#00FF00] font-bold text-lg">{userPlayer.score}</Text>
                                     </View>
                                 </View>
                             )
                         })}
+                        {rounds.filter(r => r.players.some(p => p.name === selectedMember?.name)).length === 0 && (
+                            <Text className="text-gray-500 text-center mt-4">기록된 라운드가 없습니다.</Text>
+                        )}
                     </View>
 
                 </ScrollView>

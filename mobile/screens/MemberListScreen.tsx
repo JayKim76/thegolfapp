@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { View, Text, TextInput, TouchableOpacity, FlatList, ActivityIndicator, Image, ScrollView, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { Search, User, MoreVertical, Plus } from 'lucide-react-native';
+import { Search, User, MoreVertical, Plus, ArrowLeft, ArrowUpDown } from 'lucide-react-native';
 import { useFocusEffect } from '@react-navigation/native';
 import { MemberService, Member } from '../services/MemberService';
 
@@ -10,17 +10,20 @@ export default function MemberListScreen({ navigation, route }: any) {
 
     const [searchQuery, setSearchQuery] = useState('');
     const [activeTab, setActiveTab] = useState('전체'); // '전체', '남자', '여자', '정회원'
+    const [sortBy, setSortBy] = useState('id'); // 'id', 'name', 'handicap', 'joinDate'
     const [isLoading, setIsLoading] = useState(false);
     const [members, setMembers] = useState<Member[]>([]);
+    const [filteredMembers, setFilteredMembers] = useState<Member[]>([]);
 
     const tabs = ['전체', '남자', '여자', '정회원'];
 
     const fetchMembers = async () => {
         setIsLoading(true);
         try {
-            // In a real app, you would pass filter params here
-            const data = await MemberService.getMembers();
+            // Pass sort param
+            const data = await MemberService.getMembers(sortBy);
             setMembers(data);
+            setFilteredMembers(data);
         } catch (error) {
             console.error(error);
         } finally {
@@ -31,13 +34,34 @@ export default function MemberListScreen({ navigation, route }: any) {
     useFocusEffect(
         useCallback(() => {
             fetchMembers();
-        }, [])
+        }, [sortBy]) // Refetch when sort changes
     );
 
-    // Placeholder for search logic
     useEffect(() => {
-        // Implement real search/filter logic here later
-    }, [searchQuery, activeTab]);
+        let result = members;
+
+        // 1. Filter by Tab
+        if (activeTab === '남자') {
+            result = result.filter(m => m.gender === 'male');
+        } else if (activeTab === '여자') {
+            result = result.filter(m => m.gender === 'female');
+        } else if (activeTab === '정회원') {
+            result = result.filter(m => m.type === '정회원');
+        }
+
+        // 2. Filter by Search Query
+        if (searchQuery.trim()) {
+            const lowerQuery = searchQuery.toLowerCase().trim();
+            result = result.filter(m =>
+                m.name.toLowerCase().includes(lowerQuery) ||
+                (m.email && m.email.toLowerCase().includes(lowerQuery)) ||
+                (m.phone && m.phone.includes(lowerQuery)) ||
+                (m.badges && m.badges.some(b => b.toLowerCase().includes(lowerQuery)))
+            );
+        }
+
+        setFilteredMembers(result);
+    }, [searchQuery, activeTab, members]);
 
     const handleDeleteMember = async (id: number) => {
         try {
@@ -64,9 +88,35 @@ export default function MemberListScreen({ navigation, route }: any) {
         );
     };
 
+    const handleSort = () => {
+        Alert.alert(
+            '정렬 기준 선택',
+            '',
+            [
+                { text: '최신순', onPress: () => setSortBy('id') },
+                { text: '가입일순', onPress: () => setSortBy('joinDate') },
+                { text: '이름순', onPress: () => setSortBy('name') },
+                { text: '핸디캡순 (낮은순)', onPress: () => setSortBy('handicap') },
+                { text: '취소', style: 'cancel' },
+            ]
+        );
+    };
+
+    const handleSelectMember = (member: Member) => {
+        // Selection logic to be implemented
+        console.log('Selected:', member.name);
+    };
+
     const renderMemberItem = ({ item }: { item: any }) => (
         <TouchableOpacity
-            onPress={() => isSelectionMode ? handleSelectMember(item) : null}
+            onPress={() => {
+                if (isSelectionMode) {
+                    handleSelectMember(item);
+                } else {
+                    // Navigate to Edit Screen
+                    navigation.navigate('AddMember', { initialMember: item });
+                }
+            }}
             activeOpacity={0.7}
             className={`flex-row items-center bg-[#142314] p-4 mb-3 rounded-3xl border ${isSelectionMode ? 'border-[#00FF00]' : 'border-[#2A3C2A]'}`}
         >
@@ -115,13 +165,26 @@ export default function MemberListScreen({ navigation, route }: any) {
             <SafeAreaView className="flex-1" edges={['top']}>
                 {/* Header */}
                 <View className="px-6 py-4 flex-row items-center justify-between">
-                    <Text className="text-2xl font-bold text-white">회원 목록</Text>
-                    <TouchableOpacity
-                        onPress={() => navigation.navigate('AddMember')}
-                        className="w-10 h-10 bg-[#00FF00] rounded-full items-center justify-center shadow-lg shadow-green-900/40"
-                    >
-                        <Plus size={24} color="#0B120B" strokeWidth={3} />
-                    </TouchableOpacity>
+                    <View className="flex-row items-center gap-4">
+                        <TouchableOpacity onPress={() => navigation.goBack()} className="w-10 h-10 items-center justify-center rounded-full bg-[#1C2A1C]">
+                            <ArrowLeft size={24} color="white" />
+                        </TouchableOpacity>
+                        <Text className="text-2xl font-bold text-white">회원 목록</Text>
+                    </View>
+                    <View className="flex-row gap-2">
+                        <TouchableOpacity
+                            onPress={handleSort}
+                            className="w-10 h-10 bg-[#1C2A1C] rounded-full items-center justify-center border border-[#2A3C2A]"
+                        >
+                            <ArrowUpDown size={20} color="#9CA3AF" />
+                        </TouchableOpacity>
+                        <TouchableOpacity
+                            onPress={() => navigation.navigate('AddMember')}
+                            className="w-10 h-10 bg-[#00FF00] rounded-full items-center justify-center shadow-lg shadow-green-900/40"
+                        >
+                            <Plus size={24} color="#0B120B" strokeWidth={3} />
+                        </TouchableOpacity>
+                    </View>
                 </View>
 
                 {/* Search Bar */}
@@ -153,14 +216,22 @@ export default function MemberListScreen({ navigation, route }: any) {
                     </ScrollView>
                 </View>
 
-                {/* List */}
-                <FlatList
-                    data={members}
-                    renderItem={renderMemberItem}
-                    keyExtractor={item => item.id.toString()}
-                    showsVerticalScrollIndicator={false}
-                    contentContainerStyle={{ paddingHorizontal: 24, paddingBottom: 100 }}
-                />
+                {/* Loading Indicator */}
+                {isLoading ? (
+                    <View className="flex-1 items-center justify-center">
+                        <ActivityIndicator size="large" color="#00FF00" />
+                        <Text className="text-gray-400 mt-4">회원 정보를 불러오는 중...</Text>
+                    </View>
+                ) : (
+                    /* List */
+                    <FlatList
+                        data={filteredMembers}
+                        renderItem={renderMemberItem}
+                        keyExtractor={item => item.id.toString()}
+                        showsVerticalScrollIndicator={false}
+                        contentContainerStyle={{ paddingHorizontal: 24, paddingBottom: 100 }}
+                    />
+                )}
             </SafeAreaView>
         </View>
     );

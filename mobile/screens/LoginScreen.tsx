@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, ImageBackground, Image } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, ImageBackground, Image, Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { ArrowLeft, Mail, Lock, Eye, EyeOff, LogIn, MessageCircle } from 'lucide-react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -15,6 +15,18 @@ export default function LoginScreen() {
     const darkBackground = '#0B120B';
     const neonGreen = '#00FF00';
     const cardGradient = ['rgba(0,0,0,0)', 'rgba(0,0,0,0.8)'];
+
+    const handleLogin = () => {
+        // Simple Admin Authentication
+        if (email.trim() === 'admin' && password === '1234') {
+            navigation.replace('MainTabs', {
+                screen: 'Home',
+                params: { username: '관리자' }
+            });
+        } else {
+            Alert.alert('로그인 실패', '아이디 또는 비밀번호가 올바르지 않습니다.\n(Test ID: admin / PW: 1234)');
+        }
+    };
 
     return (
         <SafeAreaView className="flex-1" style={{ backgroundColor: darkBackground }}>
@@ -67,15 +79,16 @@ export default function LoginScreen() {
                     <View className="gap-5">
                         {/* Email Input */}
                         <View className="gap-2">
-                            <Text className="text-sm font-semibold text-gray-300 ml-1">Email Address</Text>
+                            <Text className="text-sm font-semibold text-gray-300 ml-1">Email / ID</Text>
                             <View className="relative justify-center">
                                 <View className="absolute left-4 z-10">
                                     <Mail size={20} color="#9ca3af" />
                                 </View>
                                 <TextInput
-                                    placeholder="user@example.com"
+                                    placeholder="admin"
                                     value={email}
                                     onChangeText={setEmail}
+                                    autoCapitalize="none"
                                     className="w-full h-14 pl-12 pr-4 bg-[#1C2A1C] rounded-xl text-white border border-[#2A3E2A] focus:border-[#00FF00]"
                                     placeholderTextColor="#4b5563"
                                 />
@@ -115,7 +128,7 @@ export default function LoginScreen() {
 
                         {/* Login Button */}
                         <TouchableOpacity
-                            onPress={() => navigation.replace('MainTabs')}
+                            onPress={handleLogin}
                             className="w-full h-14 bg-[#00FF00] rounded-xl flex-row items-center justify-center gap-2 shadow-[0_0_15px_rgba(0,255,0,0.2)] mt-2"
                             activeOpacity={0.8}
                         >
@@ -124,36 +137,7 @@ export default function LoginScreen() {
                         </TouchableOpacity>
                     </View>
 
-                    {/* Divider */}
-                    <View className="flex-row items-center gap-4 py-8 opacity-60">
-                        <View className="h-[1px] flex-1 bg-gray-700" />
-                        <Text className="text-[10px] uppercase tracking-widest text-gray-500 font-bold">OR CONTINUE WITH</Text>
-                        <View className="h-[1px] flex-1 bg-gray-700" />
-                    </View>
-
-                    {/* Social Login Buttons */}
-                    <View className="flex-row gap-3 justify-between">
-                        <TouchableOpacity className="h-14 flex-1 rounded-xl bg-[#FEE500] items-center justify-center">
-                            <MessageCircle size={24} color="#3c1e1e" fill="#3c1e1e" />
-                        </TouchableOpacity>
-                        <TouchableOpacity className="h-14 flex-1 rounded-xl bg-[#03C75A] items-center justify-center">
-                            <Text className="text-white font-black text-xl">N</Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity className="h-14 flex-1 rounded-xl bg-white items-center justify-center">
-                            <Image
-                                source={{ uri: "https://upload.wikimedia.org/wikipedia/commons/thumb/f/fa/Apple_logo_black.svg/1667px-Apple_logo_black.svg.png" }}
-                                className="w-6 h-6"
-                                resizeMode="contain"
-                            />
-                        </TouchableOpacity>
-                        <TouchableOpacity className="h-14 flex-1 rounded-xl bg-white items-center justify-center">
-                            <Image
-                                source={{ uri: "https://cdn1.iconfinder.com/data/icons/google-s-logo/150/Google_Icons-09-512.png" }}
-                                className="w-6 h-6"
-                                resizeMode="contain"
-                            />
-                        </TouchableOpacity>
-                    </View>
+                    {/* Social Login Removed */}
 
                     {/* Sign Up Link */}
                     <View className="flex-row justify-center mt-8 mb-4">

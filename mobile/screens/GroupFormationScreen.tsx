@@ -2,15 +2,19 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { View, Text, TouchableOpacity, ScrollView, TextInput, Image, Switch, Alert, ActivityIndicator, Modal } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
-import { Search, SlidersHorizontal, Settings, RefreshCw, Check, User, Save, X } from 'lucide-react-native';
+import { Search, SlidersHorizontal, Settings, RefreshCw, Check, User, Save, X, ArrowLeft } from 'lucide-react-native';
 import Slider from '@react-native-community/slider';
 import { MemberService, Member } from '../services/MemberService';
 import { GroupService, Group } from '../services/GroupService';
 
-export default function GroupFormationScreen() {
+export default function GroupFormationScreen({ route }: any) {
     const navigation = useNavigation<any>();
+    const { courseName } = route.params || {};
+
     const [searchQuery, setSearchQuery] = useState('');
-    const [balancingMode, setBalancingMode] = useState<'equal' | 'random'>('equal');
+    const [roundDate, setRoundDate] = useState(new Date().toISOString().split('T')[0]); // YYYY-MM-DD
+    const [roundTime, setRoundTime] = useState('07:00'); // HH:mm
+    const [balancingMode, setBalancingMode] = useState<'equal' | 'random' | 'handicap'>('equal');
     const [separateGender, setSeparateGender] = useState(false);
     const [balancingCriteria, setBalancingCriteria] = useState<'avg' | 'sum'>('avg');
     const [maxDiff, setMaxDiff] = useState(3.0);
@@ -96,21 +100,21 @@ export default function GroupFormationScreen() {
                     const j = Math.floor(Math.random() * (i + 1));
                     [processedPool[i], processedPool[j]] = [processedPool[j], processedPool[i]];
                 }
+            } else if (balancingMode === 'handicap') {
+                // Sort by Handicap Ascending (Low to High - Best players first)
+                processedPool.sort((a, b) => a.handicap - b.handicap);
             } else {
-                // Sort by Handicap Descending
-                processedPool.sort((a, b) => b.handicap - a.handicap);
+                // Equal Balancing: Sort Descending initially (often helps with snake draft)
+                // Or just standard Ascending. Let's stick to Ascending for consistency
+                processedPool.sort((a, b) => a.handicap - b.handicap);
             }
 
             // Chunk into groups of 4 (or less if remainder)
-            // Snake Logic for Balanced is complex, simple chunking + sort is a good start for 'equal' text
-            // For 'equal' (Balanced), a simple snake distribution is better:
-            // Group 1: 1, 8, 9, 16
-            // Group 2: 2, 7, 10, 15 ...
-
             const numGroups = Math.ceil(processedPool.length / 4);
             const tempGroups: Member[][] = Array.from({ length: numGroups }, () => []);
 
             if (balancingMode === 'equal') {
+                // Snake / Modulo Distribution for Balance
                 processedPool.forEach((member, idx) => {
                     const cycle = Math.floor(idx / numGroups);
                     const isEvenCycle = cycle % 2 === 0;
@@ -122,6 +126,7 @@ export default function GroupFormationScreen() {
                 });
             } else {
                 // Sequential chunking for Random (since it's already shuffled)
+                // AND for Handicap Order (since it's sorted)
                 processedPool.forEach((member, idx) => {
                     const targetGroupIndex = Math.floor(idx / 4);
                     tempGroups[targetGroupIndex].push(member);
@@ -151,9 +156,10 @@ export default function GroupFormationScreen() {
     const handleSave = async () => {
         setIsSaving(true);
         try {
-            await GroupService.saveFormation(formedGroups, new Date().toISOString().split('T')[0]);
+            await GroupService.saveFormation(formedGroups, roundDate, courseName, roundTime);
             Alert.alert('저장 완료', '조편성 결과가 저장되었습니다.');
             setShowResults(false);
+            navigation.navigate('MainTabs', { screen: 'Schedule' }); // Navigate to Schedule to see the result
         } catch (error) {
             console.error(error);
             Alert.alert('오류', '저장 중 문제가 발생했습니다.');
@@ -166,7 +172,12 @@ export default function GroupFormationScreen() {
         <SafeAreaView className="flex-1 bg-[#0B120B]" edges={['top', 'left', 'right']}>
             {/* Header */}
             <View className="flex-row items-center justify-between px-6 py-4">
-                <Text className="text-2xl font-bold text-white">조편성</Text>
+                <View className="flex-row items-center gap-4">
+                    <TouchableOpacity onPress={() => navigation.goBack()} className="w-10 h-10 items-center justify-center rounded-full bg-[#1C2A1C]">
+                        <ArrowLeft size={24} color="white" />
+                    </TouchableOpacity>
+                    <Text className="text-2xl font-bold text-white">조편성</Text>
+                </View>
                 <View className="flex-row items-center gap-4">
                     <TouchableOpacity onPress={fetchMembers}>
                         <RefreshCw size={24} color="white" />
@@ -174,6 +185,34 @@ export default function GroupFormationScreen() {
                     <TouchableOpacity onPress={() => setIsSettingsExpanded(!isSettingsExpanded)}>
                         <Settings size={24} color={isSettingsExpanded ? "#00FF00" : "white"} />
                     </TouchableOpacity>
+                </View>
+            </View>
+
+            {/* Date & Time Selection */}
+            <View className="px-6 mb-4 flex-row gap-2">
+                <View className="flex-1">
+                    <Text className="text-gray-400 font-bold mb-2">날짜 (YYYY-MM-DD)</Text>
+                    <View className="bg-[#1C2A1C] rounded-xl px-4 py-3 border border-[#2A3C2A]">
+                        <TextInput
+                            className="text-white text-base font-bold"
+                            value={roundDate}
+                            onChangeText={setRoundDate}
+                            placeholder="2024-01-01"
+                            placeholderTextColor="#6B7280"
+                        />
+                    </View>
+                </View>
+                <View className="flex-1">
+                    <Text className="text-gray-400 font-bold mb-2">시간 (HH:mm)</Text>
+                    <View className="bg-[#1C2A1C] rounded-xl px-4 py-3 border border-[#2A3C2A]">
+                        <TextInput
+                            className="text-white text-base font-bold"
+                            value={roundTime}
+                            onChangeText={setRoundTime}
+                            placeholder="07:00"
+                            placeholderTextColor="#6B7280"
+                        />
+                    </View>
                 </View>
             </View>
 
@@ -192,19 +231,25 @@ export default function GroupFormationScreen() {
             </View>
 
             <ScrollView className="flex-1" contentContainerStyle={{ paddingBottom: 120 }}>
-                {/* Mode Toggles (Handicap vs Random) */}
+                {/* Mode Toggles (3 Options) */}
                 <View className="flex-row px-6 mb-4">
                     <TouchableOpacity
                         onPress={() => setBalancingMode('equal')}
                         className={`flex-1 py-3 items-center justify-center rounded-l-xl border-y border-l ${balancingMode === 'equal' ? 'bg-[#1C5E20] border-[#1C5E20]' : 'bg-[#1C2A1C] border-[#2A3C2A]'}`}
                     >
-                        <Text className={`font-bold ${balancingMode === 'equal' ? 'text-white' : 'text-gray-400'}`}>핸디캡 균등</Text>
+                        <Text className={`font-bold text-xs ${balancingMode === 'equal' ? 'text-white' : 'text-gray-400'}`}>균등 배정</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                        onPress={() => setBalancingMode('handicap')}
+                        className={`flex-1 py-3 items-center justify-center border-y border-x ${balancingMode === 'handicap' ? 'bg-[#1C5E20] border-[#1C5E20]' : 'bg-[#1C2A1C] border-[#2A3C2A]'}`}
+                    >
+                        <Text className={`font-bold text-xs ${balancingMode === 'handicap' ? 'text-white' : 'text-gray-400'}`}>핸디캡 순</Text>
                     </TouchableOpacity>
                     <TouchableOpacity
                         onPress={() => setBalancingMode('random')}
                         className={`flex-1 py-3 items-center justify-center rounded-r-xl border-y border-r ${balancingMode === 'random' ? 'bg-[#1C5E20] border-[#1C5E20]' : 'bg-[#1C2A1C] border-[#2A3C2A]'}`}
                     >
-                        <Text className={`font-bold ${balancingMode === 'random' ? 'text-white' : 'text-gray-400'}`}>무작위</Text>
+                        <Text className={`font-bold text-xs ${balancingMode === 'random' ? 'text-white' : 'text-gray-400'}`}>무작위</Text>
                     </TouchableOpacity>
                 </View>
 
@@ -361,6 +406,6 @@ export default function GroupFormationScreen() {
                     </SafeAreaView>
                 </View>
             </Modal>
-        </SafeAreaView>
+        </SafeAreaView >
     );
 }

@@ -1,0 +1,912 @@
+{
+    "members": [
+        {
+            "id": 1,
+            "name": "김용란",
+            "gender": "여",
+            "phone": "010-9055-8460",
+            "handicap": 24.0
+        },
+        {
+            "id": 2,
+            "name": "김윤성",
+            "gender": "남",
+            "phone": "010-8771-6458",
+            "handicap": 19.5
+        },
+        {
+            "id": 3,
+            "name": "김재근",
+            "gender": "남",
+            "phone": "010-2650-8464",
+            "handicap": 18.0
+        },
+        {
+            "id": 4,
+            "name": "김종남",
+            "gender": "남",
+            "phone": "010-5285-6891",
+            "handicap": 15.5
+        },
+        {
+            "id": 5,
+            "name": "김현민",
+            "gender": "여",
+            "phone": "010-8769-9902",
+            "handicap": 21.4
+        },
+        {
+            "id": 7,
+            "name": "김희연",
+            "gender": "여",
+            "phone": "010-9090-1249",
+            "handicap": 18.0
+        },
+        {
+            "id": 8,
+            "name": "노화정",
+            "gender": "여",
+            "phone": "010-3211-0645",
+            "handicap": 22.0
+        },
+        {
+            "id": 9,
+            "name": "문성식",
+            "gender": "남",
+            "phone": "010-3232-4200",
+            "handicap": 23.2
+        },
+        {
+            "id": 10,
+            "name": "박병호",
+            "gender": "남",
+            "phone": "010-4598-5472",
+            "handicap": 9.2
+        },
+        {
+            "id": 11,
+            "name": "박성민",
+            "gender": "남",
+            "phone": "010-3308-4113",
+            "handicap": 15.8
+        },
+        {
+            "id": 12,
+            "name": "박종국",
+            "gender": "남",
+            "phone": "010-6278-1067",
+            "handicap": 16.5
+        },
+        {
+            "id": 14,
+            "name": "서윤복",
+            "gender": "남",
+            "phone": "010-5202-6967",
+            "handicap": 20.2
+        },
+        {
+            "id": 15,
+            "name": "송시헌",
+            "gender": "남",
+            "phone": "010-5797-1400",
+            "handicap": 28
+        },
+        {
+            "id": 16,
+            "name": "송정애",
+            "gender": "여",
+            "phone": "010-6269-6800",
+            "handicap": 19.0
+        },
+        {
+            "id": 18,
+            "name": "송지현",
+            "gender": "남",
+            "phone": "010-5254-4028",
+            "handicap": 11.5
+        },
+        {
+            "id": 19,
+            "name": "심재광",
+            "gender": "남",
+            "phone": "010-3713-0041",
+            "handicap": 16.8
+        },
+        {
+            "id": 20,
+            "name": "양진용",
+            "gender": "남",
+            "phone": "010-3447-8731",
+            "handicap": 20.0
+        },
+        {
+            "id": 21,
+            "name": "오연택",
+            "gender": "남",
+            "phone": "010-2761-2500",
+            "handicap": 13.2
+        },
+        {
+            "id": 22,
+            "name": "오주영",
+            "gender": "여",
+            "phone": "010-8605-0794",
+            "handicap": 25.0
+        },
+        {
+            "id": 23,
+            "name": "이성희",
+            "gender": "여",
+            "phone": "010-8971-5856",
+            "handicap": 21.8
+        },
+        {
+            "id": 24,
+            "name": "이한성",
+            "gender": "남",
+            "phone": "010-9426-9601",
+            "handicap": 18.5
+        },
+        {
+            "id": 25,
+            "name": "이현미",
+            "gender": "여",
+            "phone": "010-3687-5528",
+            "handicap": 18.5
+        },
+        {
+            "id": 26,
+            "name": "이희순",
+            "gender": "여",
+            "phone": "010-8203-4371",
+            "handicap": 11.8
+        },
+        {
+            "id": 27,
+            "name": "임서원",
+            "gender": "여",
+            "phone": "010-9336-2760",
+            "handicap": 27.5
+        },
+        {
+            "id": 28,
+            "name": "임현준",
+            "gender": "남",
+            "phone": "010-7191-7415",
+            "handicap": 17.6
+        },
+        {
+            "id": 29,
+            "name": "장봉기",
+            "gender": "남",
+            "phone": "010-3080-5502",
+            "handicap": 21.5
+        },
+        {
+            "id": 30,
+            "name": "정우영",
+            "gender": "남",
+            "phone": "010-3797-8598",
+            "handicap": 20.2
+        },
+        {
+            "id": 31,
+            "name": "정종진",
+            "gender": "여",
+            "phone": "010-9587-9966",
+            "handicap": 12.2
+        },
+        {
+            "id": 32,
+            "name": "주명순",
+            "gender": "여",
+            "phone": "010-5497-0607",
+            "handicap": 22.5
+        },
+        {
+            "id": 33,
+            "name": "최영태",
+            "gender": "남",
+            "phone": "010-9340-6062",
+            "handicap": 25.0
+        }
+    ],
+    "scores": [
+        {
+            "id": 1,
+            "member_id": 2,
+            "date": "2023-03-01",
+            "score": 93
+        },
+        {
+            "id": 2,
+            "member_id": 3,
+            "date": "2023-03-01",
+            "score": 112
+        },
+        {
+            "id": 3,
+            "member_id": 5,
+            "date": "2023-03-01",
+            "score": 97
+        },
+        {
+            "id": 4,
+            "member_id": 9,
+            "date": "2023-03-01",
+            "score": 96
+        },
+        {
+            "id": 5,
+            "member_id": 10,
+            "date": "2023-03-01",
+            "score": 83
+        },
+        {
+            "id": 6,
+            "member_id": 11,
+            "date": "2023-03-01",
+            "score": 86
+        },
+        {
+            "id": 7,
+            "member_id": 12,
+            "date": "2023-03-01",
+            "score": 87
+        },
+        {
+            "id": 8,
+            "member_id": 14,
+            "date": "2023-03-01",
+            "score": 83
+        },
+        {
+            "id": 9,
+            "member_id": 20,
+            "date": "2023-03-01",
+            "score": 112
+        },
+        {
+            "id": 10,
+            "member_id": 21,
+            "date": "2023-03-01",
+            "score": 87
+        },
+        {
+            "id": 11,
+            "member_id": 22,
+            "date": "2023-03-01",
+            "score": 107
+        },
+        {
+            "id": 12,
+            "member_id": 23,
+            "date": "2023-03-01",
+            "score": 89
+        },
+        {
+            "id": 13,
+            "member_id": 24,
+            "date": "2023-03-01",
+            "score": 87
+        },
+        {
+            "id": 14,
+            "member_id": 25,
+            "date": "2023-03-01",
+            "score": 86
+        },
+        {
+            "id": 15,
+            "member_id": 26,
+            "date": "2023-03-01",
+            "score": 80
+        },
+        {
+            "id": 16,
+            "member_id": 27,
+            "date": "2023-03-01",
+            "score": 95
+        },
+        {
+            "id": 17,
+            "member_id": 28,
+            "date": "2023-03-01",
+            "score": 85
+        },
+        {
+            "id": 18,
+            "member_id": 29,
+            "date": "2023-03-01",
+            "score": 89
+        },
+        {
+            "id": 19,
+            "member_id": 30,
+            "date": "2023-03-01",
+            "score": 87
+        },
+        {
+            "id": 20,
+            "member_id": 32,
+            "date": "2023-03-01",
+            "score": 106
+        },
+        {
+            "id": 21,
+            "member_id": 33,
+            "date": "2023-03-01",
+            "score": 89
+        },
+        {
+            "id": 22,
+            "member_id": 18,
+            "date": "2023-04-01",
+            "score": 82
+        },
+        {
+            "id": 23,
+            "member_id": 1,
+            "date": "2023-04-01",
+            "score": 97
+        },
+        {
+            "id": 24,
+            "member_id": 2,
+            "date": "2023-04-01",
+            "score": 99
+        },
+        {
+            "id": 25,
+            "member_id": 3,
+            "date": "2023-04-01",
+            "score": 93
+        },
+        {
+            "id": 26,
+            "member_id": 7,
+            "date": "2023-04-01",
+            "score": 92
+        },
+        {
+            "id": 27,
+            "member_id": 8,
+            "date": "2023-04-01",
+            "score": 88
+        },
+        {
+            "id": 28,
+            "member_id": 9,
+            "date": "2023-04-01",
+            "score": 101
+        },
+        {
+            "id": 29,
+            "member_id": 12,
+            "date": "2023-04-01",
+            "score": 90
+        },
+        {
+            "id": 30,
+            "member_id": 11,
+            "date": "2023-04-01",
+            "score": 93
+        },
+        {
+            "id": 31,
+            "member_id": 15,
+            "date": "2023-04-01",
+            "score": 108
+        },
+        {
+            "id": 32,
+            "member_id": 14,
+            "date": "2023-04-01",
+            "score": 90
+        },
+        {
+            "id": 33,
+            "member_id": 20,
+            "date": "2023-04-01",
+            "score": 90
+        },
+        {
+            "id": 34,
+            "member_id": 21,
+            "date": "2023-04-01",
+            "score": 83
+        },
+        {
+            "id": 35,
+            "member_id": 23,
+            "date": "2023-04-01",
+            "score": 97
+        },
+        {
+            "id": 36,
+            "member_id": 24,
+            "date": "2023-04-01",
+            "score": 79
+        },
+        {
+            "id": 37,
+            "member_id": 26,
+            "date": "2023-04-01",
+            "score": 90
+        },
+        {
+            "id": 38,
+            "member_id": 27,
+            "date": "2023-04-01",
+            "score": 93
+        },
+        {
+            "id": 39,
+            "member_id": 28,
+            "date": "2023-04-01",
+            "score": 93
+        },
+        {
+            "id": 40,
+            "member_id": 30,
+            "date": "2023-04-01",
+            "score": 90
+        },
+        {
+            "id": 41,
+            "member_id": 32,
+            "date": "2023-04-01",
+            "score": 97
+        },
+        {
+            "id": 42,
+            "member_id": 18,
+            "date": "2023-05-01",
+            "score": 81
+        },
+        {
+            "id": 43,
+            "member_id": 2,
+            "date": "2023-05-01",
+            "score": 93
+        },
+        {
+            "id": 44,
+            "member_id": 3,
+            "date": "2023-05-01",
+            "score": 94
+        },
+        {
+            "id": 45,
+            "member_id": 5,
+            "date": "2023-05-01",
+            "score": 92
+        },
+        {
+            "id": 46,
+            "member_id": 7,
+            "date": "2023-05-01",
+            "score": 91
+        },
+        {
+            "id": 47,
+            "member_id": 8,
+            "date": "2023-05-01",
+            "score": 88
+        },
+        {
+            "id": 48,
+            "member_id": 9,
+            "date": "2023-05-01",
+            "score": 99
+        },
+        {
+            "id": 49,
+            "member_id": 10,
+            "date": "2023-05-01",
+            "score": 81
+        },
+        {
+            "id": 50,
+            "member_id": 12,
+            "date": "2023-05-01",
+            "score": 86
+        },
+        {
+            "id": 51,
+            "member_id": 16,
+            "date": "2023-05-01",
+            "score": 88
+        },
+        {
+            "id": 52,
+            "member_id": 14,
+            "date": "2023-05-01",
+            "score": 88
+        },
+        {
+            "id": 53,
+            "member_id": 20,
+            "date": "2023-05-01",
+            "score": 93
+        },
+        {
+            "id": 54,
+            "member_id": 23,
+            "date": "2023-05-01",
+            "score": 92
+        },
+        {
+            "id": 55,
+            "member_id": 24,
+            "date": "2023-05-01",
+            "score": 95
+        },
+        {
+            "id": 56,
+            "member_id": 25,
+            "date": "2023-05-01",
+            "score": 83
+        },
+        {
+            "id": 57,
+            "member_id": 26,
+            "date": "2023-05-01",
+            "score": 82
+        },
+        {
+            "id": 58,
+            "member_id": 28,
+            "date": "2023-05-01",
+            "score": 81
+        },
+        {
+            "id": 59,
+            "member_id": 29,
+            "date": "2023-05-01",
+            "score": 90
+        },
+        {
+            "id": 60,
+            "member_id": 30,
+            "date": "2023-05-01",
+            "score": 93
+        },
+        {
+            "id": 61,
+            "member_id": 31,
+            "date": "2023-05-01",
+            "score": 81
+        },
+        {
+            "id": 62,
+            "member_id": 1,
+            "date": "2023-06-01",
+            "score": 91
+        },
+        {
+            "id": 63,
+            "member_id": 4,
+            "date": "2023-06-01",
+            "score": 78
+        },
+        {
+            "id": 64,
+            "member_id": 5,
+            "date": "2023-06-01",
+            "score": 92
+        },
+        {
+            "id": 65,
+            "member_id": 7,
+            "date": "2023-06-01",
+            "score": 93
+        },
+        {
+            "id": 66,
+            "member_id": 8,
+            "date": "2023-06-01",
+            "score": 86
+        },
+        {
+            "id": 67,
+            "member_id": 12,
+            "date": "2023-06-01",
+            "score": 83
+        },
+        {
+            "id": 68,
+            "member_id": 15,
+            "date": "2023-06-01",
+            "score": 100
+        },
+        {
+            "id": 69,
+            "member_id": 16,
+            "date": "2023-06-01",
+            "score": 92
+        },
+        {
+            "id": 70,
+            "member_id": 19,
+            "date": "2023-06-01",
+            "score": 85
+        },
+        {
+            "id": 71,
+            "member_id": 20,
+            "date": "2023-06-01",
+            "score": 91
+        },
+        {
+            "id": 72,
+            "member_id": 21,
+            "date": "2023-06-01",
+            "score": 76
+        },
+        {
+            "id": 73,
+            "member_id": 23,
+            "date": "2023-06-01",
+            "score": 92
+        },
+        {
+            "id": 74,
+            "member_id": 24,
+            "date": "2023-06-01",
+            "score": 84
+        },
+        {
+            "id": 75,
+            "member_id": 28,
+            "date": "2023-06-01",
+            "score": 87
+        },
+        {
+            "id": 76,
+            "member_id": 29,
+            "date": "2023-06-01",
+            "score": 85
+        },
+        {
+            "id": 77,
+            "member_id": 30,
+            "date": "2023-06-01",
+            "score": 93
+        },
+        {
+            "id": 78,
+            "member_id": 31,
+            "date": "2023-06-01",
+            "score": 87
+        },
+        {
+            "id": 79,
+            "member_id": 32,
+            "date": "2023-06-01",
+            "score": 106
+        },
+        {
+            "id": 80,
+            "member_id": 18,
+            "date": "2023-09-01",
+            "score": 85
+        },
+        {
+            "id": 81,
+            "member_id": 3,
+            "date": "2023-09-01",
+            "score": 89
+        },
+        {
+            "id": 82,
+            "member_id": 4,
+            "date": "2023-09-01",
+            "score": 82
+        },
+        {
+            "id": 83,
+            "member_id": 5,
+            "date": "2023-09-01",
+            "score": 88
+        },
+        {
+            "id": 84,
+            "member_id": 8,
+            "date": "2023-09-01",
+            "score": 89
+        },
+        {
+            "id": 85,
+            "member_id": 10,
+            "date": "2023-09-01",
+            "score": 80
+        },
+        {
+            "id": 86,
+            "member_id": 12,
+            "date": "2023-09-01",
+            "score": 96
+        },
+        {
+            "id": 87,
+            "member_id": 14,
+            "date": "2023-09-01",
+            "score": 86
+        },
+        {
+            "id": 88,
+            "member_id": 15,
+            "date": "2023-09-01",
+            "score": 97
+        },
+        {
+            "id": 89,
+            "member_id": 21,
+            "date": "2023-09-01",
+            "score": 83
+        },
+        {
+            "id": 90,
+            "member_id": 22,
+            "date": "2023-09-01",
+            "score": 94
+        },
+        {
+            "id": 91,
+            "member_id": 23,
+            "date": "2023-09-01",
+            "score": 93
+        },
+        {
+            "id": 92,
+            "member_id": 24,
+            "date": "2023-09-01",
+            "score": 80
+        },
+        {
+            "id": 93,
+            "member_id": 29,
+            "date": "2023-09-01",
+            "score": 90
+        },
+        {
+            "id": 94,
+            "member_id": 30,
+            "date": "2023-09-01",
+            "score": 92
+        },
+        {
+            "id": 95,
+            "member_id": 32,
+            "date": "2023-09-01",
+            "score": 91
+        },
+        {
+            "id": 96,
+            "member_id": 18,
+            "date": "2023-10-01",
+            "score": 82
+        },
+        {
+            "id": 97,
+            "member_id": 1,
+            "date": "2023-10-01",
+            "score": 92
+        },
+        {
+            "id": 98,
+            "member_id": 2,
+            "date": "2023-10-01",
+            "score": 92
+        },
+        {
+            "id": 99,
+            "member_id": 3,
+            "date": "2023-10-01",
+            "score": 107
+        },
+        {
+            "id": 100,
+            "member_id": 4,
+            "date": "2023-10-01",
+            "score": 82
+        },
+        {
+            "id": 101,
+            "member_id": 5,
+            "date": "2023-10-01",
+            "score": 85
+        },
+        {
+            "id": 102,
+            "member_id": 7,
+            "date": "2023-10-01",
+            "score": 88
+        },
+        {
+            "id": 103,
+            "member_id": 8,
+            "date": "2023-10-01",
+            "score": 84
+        },
+        {
+            "id": 104,
+            "member_id": 10,
+            "date": "2023-10-01",
+            "score": 79
+        },
+        {
+            "id": 105,
+            "member_id": 12,
+            "date": "2023-10-01",
+            "score": 90
+        },
+        {
+            "id": 106,
+            "member_id": 15,
+            "date": "2023-10-01",
+            "score": 96
+        },
+        {
+            "id": 107,
+            "member_id": 19,
+            "date": "2023-10-01",
+            "score": 91
+        },
+        {
+            "id": 108,
+            "member_id": 21,
+            "date": "2023-10-01",
+            "score": 85
+        },
+        {
+            "id": 109,
+            "member_id": 22,
+            "date": "2023-10-01",
+            "score": 85
+        },
+        {
+            "id": 110,
+            "member_id": 24,
+            "date": "2023-10-01",
+            "score": 81
+        },
+        {
+            "id": 111,
+            "member_id": 23,
+            "date": "2023-10-01",
+            "score": 96
+        },
+        {
+            "id": 112,
+            "member_id": 20,
+            "date": "2023-10-01",
+            "score": 91
+        },
+        {
+            "id": 113,
+            "member_id": 26,
+            "date": "2023-10-01",
+            "score": 80
+        },
+        {
+            "id": 114,
+            "member_id": 28,
+            "date": "2023-10-01",
+            "score": 90
+        },
+        {
+            "id": 115,
+            "member_id": 30,
+            "date": "2023-10-01",
+            "score": 87
+        },
+        {
+            "id": 116,
+            "member_id": 32,
+            "date": "2023-10-01",
+            "score": 105
+        }
+    ]
+}

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, TouchableOpacity, ScrollView, StatusBar, ActivityIndicator } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, ScrollView, StatusBar, ActivityIndicator, Modal, KeyboardAvoidingView, Platform, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 import { ArrowLeft, Search, MapPin, ChevronRight, Plus } from 'lucide-react-native';
@@ -10,7 +10,15 @@ export default function CourseSelectScreen() {
     const [searchQuery, setSearchQuery] = useState('');
     const [courses, setCourses] = useState<GolfCourse[]>([]);
     const [isLoading, setIsLoading] = useState(false);
-    const [isSearching, setIsSearching] = useState(false); // 검색 모드 여부
+    const [isSearching, setIsSearching] = useState(false);
+
+    // Add Course Modal State
+    const [isAddModalVisible, setIsAddModalVisible] = useState(false);
+    const [newCourseName, setNewCourseName] = useState('');
+    const [newCourseLocation, setNewCourseLocation] = useState('');
+    const [isAdding, setIsAdding] = useState(false);
+
+    // ... useEffects ...
 
     // 초기 로딩: 추천 골프장 표시
     useEffect(() => {
@@ -51,6 +59,35 @@ export default function CourseSelectScreen() {
 
         return () => clearTimeout(delayDebounceFn);
     }, [searchQuery]);
+
+    const handleAddCourse = async () => {
+        if (!newCourseName.trim()) {
+            Alert.alert('알림', '골프장 이름을 입력해주세요.');
+            return;
+        }
+
+        setIsAdding(true);
+        try {
+            const newCourse = await GolfCourseService.addCourse(newCourseName, newCourseLocation || '위치 정보 없음');
+            if (newCourse) {
+                setIsAddModalVisible(false);
+                setNewCourseName('');
+                setNewCourseLocation('');
+
+                // Navigate with new course
+                navigation.navigate('GroupFormation', {
+                    courseName: newCourse.name,
+                    courseLocation: newCourse.location
+                });
+            } else {
+                Alert.alert('오류', '골프장 추가에 실패했습니다.');
+            }
+        } catch (error) {
+            Alert.alert('오류', '골프장 추가 중 문제가 발생했습니다.');
+        } finally {
+            setIsAdding(false);
+        }
+    };
 
     return (
         <View className="flex-1 bg-gray-50 dark:bg-gray-900">
@@ -93,8 +130,8 @@ export default function CourseSelectScreen() {
                         {isSearching ? `검색 결과 (${courses.length})` : '추천 골프장'}
                     </Text>
                     {!isSearching && (
-                        <TouchableOpacity>
-                            <Text className="text-[#059669] font-bold text-sm">지도 보기</Text>
+                        <TouchableOpacity onPress={loadRecommendedCourses}>
+                            <Text className="text-[#059669] font-bold text-sm">목록 갱신</Text>
                         </TouchableOpacity>
                     )}
                 </View>
@@ -103,7 +140,7 @@ export default function CourseSelectScreen() {
                     {courses.length > 0 ? (
                         courses.map((course) => (
                             <TouchableOpacity
-                                key={course.id}
+                                key={course.id || Math.random()} // Fallback key
                                 className="bg-white dark:bg-gray-800 p-4 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 flex-row items-center justify-between"
                                 onPress={() => {
                                     navigation.navigate('GroupFormation', {
@@ -132,7 +169,13 @@ export default function CourseSelectScreen() {
                                 <Text className="text-gray-400 mb-4">
                                     {isSearching ? `'${searchQuery}'에 대한 검색 결과가 없습니다.` : '골프장 목록을 불러올 수 없습니다.'}
                                 </Text>
-                                <TouchableOpacity className="flex-row items-center gap-2 bg-gray-200 dark:bg-gray-700 px-5 py-3 rounded-xl">
+                                <TouchableOpacity
+                                    onPress={() => {
+                                        setNewCourseName(searchQuery); // Pre-fill search query
+                                        setIsAddModalVisible(true);
+                                    }}
+                                    className="flex-row items-center gap-2 bg-gray-200 dark:bg-gray-700 px-5 py-3 rounded-xl"
+                                >
                                     <Plus size={18} color="#4B5563" />
                                     <Text className="font-bold text-gray-700 dark:text-gray-300">직접 골프장 추가</Text>
                                 </TouchableOpacity>
@@ -141,6 +184,61 @@ export default function CourseSelectScreen() {
                     )}
                 </View>
             </ScrollView>
+
+            {/* Add Course Modal */}
+            <Modal
+                visible={isAddModalVisible}
+                transparent
+                animationType="fade"
+                onRequestClose={() => setIsAddModalVisible(false)}
+            >
+                <KeyboardAvoidingView
+                    behavior={Platform.OS === "ios" ? "padding" : "height"}
+                    className="flex-1 bg-black/50 justify-center items-center px-6"
+                >
+                    <View className="bg-gray-900 w-full rounded-2xl p-6 border border-gray-700 shadow-xl">
+                        <Text className="text-xl font-bold text-white mb-4">골프장 직접 추가</Text>
+
+                        <Text className="text-gray-400 mb-2 font-bold">골프장 이름</Text>
+                        <TextInput
+                            className="bg-gray-800 text-white rounded-xl px-4 py-3 mb-4 border border-gray-700"
+                            placeholder="예: 우리동네 CC"
+                            placeholderTextColor="#6B7280"
+                            value={newCourseName}
+                            onChangeText={setNewCourseName}
+                            autoFocus
+                        />
+
+                        <Text className="text-gray-400 mb-2 font-bold">위치 (선택)</Text>
+                        <TextInput
+                            className="bg-gray-800 text-white rounded-xl px-4 py-3 mb-6 border border-gray-700"
+                            placeholder="예: 경기도 용인시"
+                            placeholderTextColor="#6B7280"
+                            value={newCourseLocation}
+                            onChangeText={setNewCourseLocation}
+                        />
+
+                        <View className="flex-row gap-3">
+                            <TouchableOpacity
+                                onPress={() => setIsAddModalVisible(false)}
+                                className="flex-1 bg-gray-700 py-3 rounded-xl items-center"
+                            >
+                                <Text className="text-gray-300 font-bold">취소</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity
+                                onPress={handleAddCourse}
+                                className="flex-1 bg-[#059669] py-3 rounded-xl items-center"
+                            >
+                                {isAdding ? (
+                                    <ActivityIndicator color="white" />
+                                ) : (
+                                    <Text className="text-white font-bold">추가 및 선택</Text>
+                                )}
+                            </TouchableOpacity>
+                        </View>
+                    </View>
+                </KeyboardAvoidingView>
+            </Modal>
         </View>
     );
 }
