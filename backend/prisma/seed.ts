@@ -15,6 +15,7 @@ async function main() {
     // Clear existing data
     // Delete in order to avoid foreign key constraints
     await prisma.round.deleteMany();
+    await prisma.roundSession.deleteMany();
     await prisma.group.deleteMany();
     await prisma.schedule.deleteMany();
     await prisma.member.deleteMany();
@@ -48,23 +49,27 @@ async function main() {
         });
     }
 
-    // Import Scores (Rounds)
+    // Import Scores (Rounds): one RoundSession per date, one Round per player
     if (data.scores && data.scores.length > 0) {
         console.log(`Importing ${data.scores.length} scores...`);
+        const byDate = new Map<string, any[]>();
         for (const s of data.scores) {
-            // Check if member exists (just in case)
-            const memberExists = data.members.find((m: any) => m.id === s.member_id);
-            if (memberExists) {
-                await prisma.round.create({
-                    data: {
-                        memberId: s.member_id,
-                        date: s.date,
-                        score: s.score,
-                        // courseName: 'Unknown', // Optional
-                    }
-                });
-            }
+            if (!data.members.find((m: any) => m.id === s.member_id)) continue;
+            if (!byDate.has(s.date)) byDate.set(s.date, []);
+            byDate.get(s.date)!.push(s);
         }
+        for (const [date, scores] of byDate) {
+            const session = await prisma.roundSession.create({ data: { date } });
+            await prisma.round.createMany({
+                data: scores.map((s: any) => ({
+                    sessionId: session.id,
+                    memberId: s.member_id,
+                    date: s.date,
+                    score: s.score,
+                })),
+            });
+        }
+        console.log(`Created ${byDate.size} round sessions.`);
     }
 
     console.log('Seeding completed.');

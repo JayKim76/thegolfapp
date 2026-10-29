@@ -59,15 +59,29 @@ model Group {
   members     Member[]
 }
 
-model Round {
+// One outing recorded by the admin. A session owns one score record
+// (Round) per player, so a round is stored once and read back per member.
+model RoundSession {
   id          Int      @id @default(autoincrement())
-  memberId    Int
-  member      Member   @relation(fields: [memberId], references: [id], onDelete: Cascade)
   date        String   // YYYY-MM-DD
   courseName  String?
-  score       Int
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+  scores      Round[]
+}
+
+model Round {
+  id          Int           @id @default(autoincrement())
+  memberId    Int?
+  member      Member?       @relation(fields: [memberId], references: [id], onDelete: Cascade)
+  guestName   String?       // Set when the player is not a registered member
+  sessionId   Int?
+  session     RoundSession? @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  date        String        // YYYY-MM-DD
+  courseName  String?
+  score       Int
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
 }
 
 

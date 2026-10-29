@@ -44,10 +44,11 @@ export default function StatisticsScreen() {
     };
 
     const calculateStats = (member: Member) => {
-        // Filter rounds where the selected member played
-        // Matching by NAME for now as IDs might differ between services in this dev phase
+        // Filter rounds where the selected member played.
+        // Scores are stored per member, so match by memberId first and
+        // fall back to the name only for older records without an ID.
         const myScores = rounds
-            .flatMap(r => r.players.filter(p => p.name === member.name))
+            .flatMap(r => r.players.filter(p => (p.memberId ? p.memberId === member.id : p.name === member.name)))
             .map(p => p.score);
 
         if (myScores.length > 0) {

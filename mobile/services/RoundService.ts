@@ -12,9 +12,6 @@ export interface RoundPlayer {
     diff?: number; // Score difference from handicap or par (mocked for now)
 }
 
-// Mock Data Storage (Empty for production-like behavior, will use API)
-let MOCK_ROUNDS: Round[] = [];
-
 import { API_BASE, AuthService } from './AuthService';
 
 const API_URL = `${API_BASE}/api/rounds`;
@@ -58,27 +55,41 @@ export const RoundService = {
             const newRound = await response.json();
             return newRound;
         } catch (error) {
+            // Rounds live in the backend DB now. A failed save must surface
+            // as an error — silently keeping it on the device would lose it.
             console.error('Save round failed:', error);
-            // Fallback mock logic for demo if server fails
-            const newRound = {
-                ...round,
-                id: Date.now(),
-            };
-            MOCK_ROUNDS.unshift(newRound);
-            return newRound;
+            throw error;
         }
     },
 
     /**
-     * Get statistics for a specific member (Mock)
+     * Delete one recorded round (admin). Removes all of its player scores.
+     */
+    deleteRound: async (roundId: number): Promise<void> => {
+        const response = await fetch(`${API_URL}/${roundId}`, {
+            method: 'DELETE',
+            headers: { ...AuthService.authHeaders() },
+        });
+        if (!response.ok) {
+            throw new Error('Failed to delete round');
+        }
+    },
+
+    /**
+     * One member's recorded scores and summary, computed by the backend
+     * from the stored Round rows.
      */
     getMemberStats: async (memberId: number) => {
-        // This could be moved to backend too, but keeping mock for now as requested task was just saving/lookup
-        await new Promise(resolve => setTimeout(resolve, 500));
-        return {
-            avgScore: 82.4,
-            handicap: 12,
-            bestScore: 78
+        const response = await fetch(`${API_URL}/member/${memberId}`);
+        if (!response.ok) {
+            throw new Error('Failed to fetch member stats');
+        }
+        const data = await response.json();
+        return data.stats as {
+            count: number;
+            avgScore: number | null;
+            bestScore: number | null;
+            recentScores: number[];
         };
     }
 };
