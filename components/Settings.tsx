@@ -8,7 +8,7 @@ const Settings: React.FC = () => {
   return (
     <div className="p-4 pb-24">
       <header className="pt-4 mb-6">
-        <h1 className="text-3xl font-bold px-1">설정</h1>
+        <h1 className="text-3xl font-bold px-1">모임 관리</h1>
       </header>
 
       <div className="bg-surface rounded-3xl p-5 border border-white/5 mb-8">
@@ -20,15 +20,15 @@ const Settings: React.FC = () => {
             </button>
           </div>
           <div>
-            <h2 className="text-xl font-bold">김골프</h2>
-            <p className="text-xs text-gray-500 mb-2">kimgolf@example.com</p>
+            <h2 className="text-xl font-bold">EagleView 골프 모임</h2>
+            <p className="text-xs text-gray-500 mb-2">관리자 계정으로 운영 중</p>
             <div className="flex gap-2">
-              <span className="px-2 py-0.5 rounded bg-yellow-900/40 text-yellow-500 text-[10px] font-bold">Gold Tier</span>
-              <span className="px-2 py-0.5 rounded bg-primary/10 text-primary text-[10px] font-bold">HCP 18</span>
+              <span className="px-2 py-0.5 rounded bg-yellow-900/40 text-yellow-500 text-[10px] font-bold">관리자</span>
+              <span className="px-2 py-0.5 rounded bg-primary/10 text-primary text-[10px] font-bold">단일 모임</span>
             </div>
           </div>
         </div>
-        <button className="w-full py-2.5 bg-white/5 rounded-xl text-sm font-bold hover:bg-white/10 transition-colors">프로필 관리</button>
+        <button className="w-full py-2.5 bg-white/5 rounded-xl text-sm font-bold hover:bg-white/10 transition-colors">모임 정보 관리</button>
       </div>
 
       <div className="space-y-8">

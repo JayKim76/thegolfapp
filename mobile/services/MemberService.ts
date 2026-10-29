@@ -1,7 +1,7 @@
 export interface Member {
     id: number;
     name: string;
-    email: string;
+    email?: string; // optional: members are admin-managed records, not accounts
     handicap: number;
     phone: string;
     joinDate: string;
@@ -13,8 +13,9 @@ export interface Member {
     gender?: 'male' | 'female';
 }
 
-// Replace with your machine's local IP if testing on physical device
-const API_URL = 'http://192.168.10.107:3000/api/members';
+import { API_BASE, AuthService } from './AuthService';
+
+const API_URL = `${API_BASE}/api/members`;
 
 const MOCK_MEMBERS: Member[] = [];
 
@@ -81,6 +82,7 @@ export const MemberService = {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
+                    ...AuthService.authHeaders(),
                 },
                 body: JSON.stringify(member),
             });
@@ -107,6 +109,7 @@ export const MemberService = {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
+                    ...AuthService.authHeaders(),
                 },
                 body: JSON.stringify(member),
             });
@@ -131,6 +134,7 @@ export const MemberService = {
         try {
             const response = await fetch(`${API_URL}/${id}`, {
                 method: 'DELETE',
+                headers: { ...AuthService.authHeaders() },
             });
             if (!response.ok) {
                 throw new Error('Failed to delete member');

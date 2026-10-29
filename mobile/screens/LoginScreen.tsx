@@ -1,36 +1,38 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, ImageBackground, Image, Alert } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, ImageBackground, Alert, ActivityIndicator } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import { ArrowLeft, Mail, Lock, Eye, EyeOff, LogIn, MessageCircle } from 'lucide-react-native';
+import { ArrowLeft, User, Lock, Eye, EyeOff, LogIn, ShieldCheck } from 'lucide-react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
+import { AuthService } from '../services/AuthService';
 
+// Club-admin model: this is the ONLY login in the app.
+// The admin manages every member of the club; members have no accounts.
 export default function LoginScreen() {
     const navigation = useNavigation<any>();
-    const [email, setEmail] = useState('');
+    const [adminId, setAdminId] = useState('admin');
     const [password, setPassword] = useState('');
     const [showPassword, setShowPassword] = useState(false);
+    const [isLoggingIn, setIsLoggingIn] = useState(false);
 
-    // Custom Colors
     const darkBackground = '#0B120B';
-    const neonGreen = '#00FF00';
-    const cardGradient = ['rgba(0,0,0,0)', 'rgba(0,0,0,0.8)'];
 
-    const handleLogin = () => {
-        // Simple Admin Authentication
-        if (email.trim() === 'admin' && password === '1234') {
-            navigation.replace('MainTabs', {
-                screen: 'Home',
-                params: { username: '관리자' }
-            });
-        } else {
-            Alert.alert('로그인 실패', '아이디 또는 비밀번호가 올바르지 않습니다.\n(Test ID: admin / PW: 1234)');
+    const handleLogin = async () => {
+        setIsLoggingIn(true);
+        try {
+            const ok = await AuthService.login(adminId, password);
+            if (ok) {
+                navigation.replace('MainTabs', { screen: 'Home' });
+            } else {
+                Alert.alert('로그인 실패', '관리자 아이디 또는 비밀번호가 올바르지 않습니다.\n(개발 기본값: admin / 1234)');
+            }
+        } finally {
+            setIsLoggingIn(false);
         }
     };
 
     return (
         <SafeAreaView className="flex-1" style={{ backgroundColor: darkBackground }}>
-            {/* Header / Back Button */}
             <View className="px-6 py-4">
                 <View className="flex-row items-center justify-between">
                     <TouchableOpacity
@@ -39,16 +41,15 @@ export default function LoginScreen() {
                     >
                         <ArrowLeft size={24} color="white" />
                     </TouchableOpacity>
-                    <Text className="text-gray-400 font-medium text-base">Log In</Text>
+                    <Text className="text-gray-400 font-medium text-base">관리자 로그인</Text>
                     <View className="w-10" />
                 </View>
             </View>
 
             <View className="flex-1 px-6">
-                {/* Welcome Back Card */}
                 <View className="h-56 w-full rounded-3xl overflow-hidden mb-8 shadow-2xl elevation-10 relative bg-[#1a2e1a]">
                     <ImageBackground
-                        source={{ uri: "https://images.unsplash.com/photo-1535131749006-b7f58c99034b?q=80&w=2070&auto=format&fit=crop" }} // Golf Swing Image
+                        source={{ uri: "https://images.unsplash.com/photo-1535131749006-b7f58c99034b?q=80&w=2070&auto=format&fit=crop" }}
                         className="w-full h-full"
                         resizeMode="cover"
                     >
@@ -57,37 +58,34 @@ export default function LoginScreen() {
                             locations={[0, 0.4, 1]}
                             className="absolute inset-0"
                         />
-                        {/* Overlay Gradient for Text Readability */}
                         <LinearGradient
                             colors={['transparent', 'rgba(11, 18, 11, 0.9)']}
                             className="absolute inset-x-0 bottom-0 h-32 justify-end px-6 pb-6"
                         >
                             <Text className="text-white text-3xl font-extrabold tracking-tight mb-1">
-                                Welcome Back
+                                모임 관리자
                             </Text>
                             <Text className="text-gray-300 text-sm font-medium opacity-90">
-                                Ready to hit the green?
+                                전체 회원·일정·스코어를 한 계정으로 관리합니다
                             </Text>
                         </LinearGradient>
                     </ImageBackground>
                 </View>
 
-                {/* Form Section */}
                 <View>
-                    <Text className="text-2xl font-bold text-white mb-6 tracking-tight">Perfect Your Swing</Text>
+                    <Text className="text-2xl font-bold text-white mb-6 tracking-tight">관리자 로그인</Text>
 
                     <View className="gap-5">
-                        {/* Email Input */}
                         <View className="gap-2">
-                            <Text className="text-sm font-semibold text-gray-300 ml-1">Email / ID</Text>
+                            <Text className="text-sm font-semibold text-gray-300 ml-1">관리자 ID</Text>
                             <View className="relative justify-center">
                                 <View className="absolute left-4 z-10">
-                                    <Mail size={20} color="#9ca3af" />
+                                    <User size={20} color="#9ca3af" />
                                 </View>
                                 <TextInput
                                     placeholder="admin"
-                                    value={email}
-                                    onChangeText={setEmail}
+                                    value={adminId}
+                                    onChangeText={setAdminId}
                                     autoCapitalize="none"
                                     className="w-full h-14 pl-12 pr-4 bg-[#1C2A1C] rounded-xl text-white border border-[#2A3E2A] focus:border-[#00FF00]"
                                     placeholderTextColor="#4b5563"
@@ -95,9 +93,8 @@ export default function LoginScreen() {
                             </View>
                         </View>
 
-                        {/* Password Input */}
                         <View className="gap-2">
-                            <Text className="text-sm font-semibold text-gray-300 ml-1">Password</Text>
+                            <Text className="text-sm font-semibold text-gray-300 ml-1">비밀번호</Text>
                             <View className="relative justify-center">
                                 <View className="absolute left-4 z-10">
                                     <Lock size={20} color="#9ca3af" />
@@ -121,30 +118,31 @@ export default function LoginScreen() {
                                     )}
                                 </TouchableOpacity>
                             </View>
-                            <TouchableOpacity className="items-end mt-1">
-                                <Text className="text-xs text-gray-400 font-medium hover:text-[#00FF00]">Forgot Password?</Text>
-                            </TouchableOpacity>
+                            <Text className="text-xs text-gray-500 ml-1">비밀번호는 서버의 ADMIN_PASSWORD로 관리합니다.</Text>
                         </View>
 
-                        {/* Login Button */}
                         <TouchableOpacity
                             onPress={handleLogin}
+                            disabled={isLoggingIn}
                             className="w-full h-14 bg-[#00FF00] rounded-xl flex-row items-center justify-center gap-2 shadow-[0_0_15px_rgba(0,255,0,0.2)] mt-2"
                             activeOpacity={0.8}
                         >
-                            <Text className="text-black font-extrabold text-lg">Log In</Text>
-                            <LogIn size={20} color="black" strokeWidth={2.5} />
+                            {isLoggingIn ? (
+                                <ActivityIndicator color="black" />
+                            ) : (
+                                <>
+                                    <Text className="text-black font-extrabold text-lg">관리자로 로그인</Text>
+                                    <LogIn size={20} color="black" strokeWidth={2.5} />
+                                </>
+                            )}
                         </TouchableOpacity>
                     </View>
 
-                    {/* Social Login Removed */}
-
-                    {/* Sign Up Link */}
-                    <View className="flex-row justify-center mt-8 mb-4">
-                        <Text className="text-gray-400 text-sm">Don't have an account? </Text>
-                        <TouchableOpacity onPress={() => navigation.navigate('SignUp')}>
-                            <Text className="text-[#00FF00] font-bold text-sm">Sign up</Text>
-                        </TouchableOpacity>
+                    <View className="flex-row items-start gap-2 mt-8 mb-4 bg-[#142314] border border-[#2A3E2A] rounded-xl p-4">
+                        <ShieldCheck size={18} color="#00FF00" />
+                        <Text className="text-gray-400 text-sm flex-1">
+                            회원은 개별 계정을 만들지 않습니다. 회원 등록·수정은 관리자가 회원 관리 메뉴에서 직접 합니다.
+                        </Text>
                     </View>
                 </View>
             </View>

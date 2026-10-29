@@ -10,7 +10,6 @@ import { Home, History, User, Calendar, Plus, Grid } from 'lucide-react-native';
 // Screens
 import OnboardingScreen from './screens/OnboardingScreen';
 import LoginScreen from './screens/LoginScreen';
-import SignUpScreen from './screens/SignUpScreen';
 import MemberListScreen from './screens/MemberListScreen';
 import HomeScreen from './screens/HomeScreen';
 import HistoryScreen from './screens/HistoryScreen';
@@ -138,7 +137,7 @@ function MainTabs() {
           tabBarIcon: ({ color, size, focused }) => (
             <View className={`items-center justify-center ${focused ? 'bg-[#1C2A1C] p-2 rounded-xl' : ''}`}>
               <User color={color} size={24} />
-              {focused && <Text className="text-[#00FF00] text-[10px] font-bold mt-1">MY</Text>}
+              {focused && <Text className="text-[#00FF00] text-[10px] font-bold mt-1">관리</Text>}
             </View>
           ),
         }}
@@ -152,12 +151,11 @@ export default function App() {
     <SafeAreaProvider>
       <NavigationContainer>
         <Stack.Navigator
-          initialRouteName="Onboarding" // Changed to Onboarding to restart flow
+          initialRouteName="Onboarding"
           screenOptions={{ headerShown: false }}
         >
           <Stack.Screen name="Onboarding" component={OnboardingScreen} />
           <Stack.Screen name="Login" component={LoginScreen} />
-          <Stack.Screen name="SignUp" component={SignUpScreen} />
           <Stack.Screen name="MainTabs" component={MainTabs} />
 
           <Stack.Screen name="CourseSelect" component={CourseSelectScreen} />

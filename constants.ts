@@ -1,6 +1,13 @@
 
 import { Member, Round, ScoreEntry } from './types';
 
+// Club-admin model: the whole app belongs to ONE club and is run by its
+// admin. Members below are records the admin manages — not app users.
+export const MOCK_CLUB = {
+  name: 'EagleView 골프 모임',
+  adminId: 'admin',
+};
+
 export const MOCK_MEMBERS: Member[] = [
   {
     id: '1',

@@ -18,6 +18,13 @@ async function main() {
     await prisma.group.deleteMany();
     await prisma.schedule.deleteMany();
     await prisma.member.deleteMany();
+    await prisma.club.deleteMany();
+
+    // Single-club model: one club (모임), one admin managing every member.
+    const club = await prisma.club.create({
+        data: { id: 1, name: 'EagleView 골프 모임', description: '관리자가 전체 회원을 관리하는 단일 모임' }
+    });
+    console.log(`Created club: ${club.name} (id=${club.id})`);
 
     console.log('Cleared existing data.');
 
@@ -28,6 +35,7 @@ async function main() {
         await prisma.member.create({
             data: {
                 id: m.id, // Use explicit ID to match scores
+                clubId: club.id,
                 name: m.name,
                 email: `user${m.id}@example.com`, // Synthetic email
                 phone: m.phone,

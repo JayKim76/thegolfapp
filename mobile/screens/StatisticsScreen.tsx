@@ -82,7 +82,7 @@ export default function StatisticsScreen() {
                     <TouchableOpacity onPress={() => navigation.goBack()} className="w-10 h-10 items-center justify-center rounded-full bg-[#1C2A1C]">
                         <ArrowLeft size={24} color="white" />
                     </TouchableOpacity>
-                    <Text className="text-white text-xl font-bold">통계 분석</Text>
+                    <View><Text className="text-white text-xl font-bold">통계 분석</Text><Text className="text-gray-500 text-xs">관리자 · 회원을 선택하면 해당 회원의 기록을 봅니다</Text></View>
                 </View>
 
                 {/* Member Selector */}

@@ -17,8 +17,9 @@ export interface GroupFormationResult {
 
 const MOCK_HISTORY: GroupFormationResult[] = [];
 
-// Replace with your machine's local IP
-const API_URL = 'http://192.168.10.107:3000/api/schedules';
+import { API_BASE, AuthService } from './AuthService';
+
+const API_URL = `${API_BASE}/api/schedules`;
 
 export const GroupService = {
     /**
@@ -30,6 +31,7 @@ export const GroupService = {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
+                    ...AuthService.authHeaders(),
                 },
                 body: JSON.stringify({
                     date,

@@ -43,8 +43,9 @@ const MOCK_SCHEDULES: Schedule[] = [
     }
 ];
 
-// Replace with your machine's local IP
-const API_URL = 'http://192.168.10.107:3000/api/schedules';
+import { API_BASE, AuthService } from './AuthService';
+
+const API_URL = `${API_BASE}/api/schedules`;
 
 export const ScheduleService = {
     /**
@@ -78,6 +79,7 @@ export const ScheduleService = {
         try {
             const response = await fetch(`${API_URL}/${id}`, {
                 method: 'DELETE',
+                headers: { ...AuthService.authHeaders() },
             });
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);

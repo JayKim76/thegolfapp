@@ -7,8 +7,9 @@ export interface GolfCourse {
 
 
 
-// Replace with your machine's local IP
-const API_URL = 'http://192.168.10.107:3000/api/courses';
+import { API_BASE, AuthService } from './AuthService';
+
+const API_URL = `${API_BASE}/api/courses`;
 
 export const GolfCourseService = {
     /**
@@ -57,6 +58,7 @@ export const GolfCourseService = {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
+                    ...AuthService.authHeaders(),
                 },
                 body: JSON.stringify({
                     name,

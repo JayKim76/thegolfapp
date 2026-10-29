@@ -1,8 +1,7 @@
 import { Router } from 'express';
-import { PrismaClient } from '@prisma/client';
+import { prisma } from '../prisma';
 
 const router = Router();
-const prisma = new PrismaClient();
 
 // Get all members with filters
 router.get('/', async (req, res) => {
@@ -63,7 +62,9 @@ router.post('/', async (req, res) => {
         const newMember = await prisma.member.create({
             data: {
                 name,
-                email,
+                // Members are admin-managed records, not accounts:
+                // an email is optional and may be left empty.
+                email: email ? String(email) : null,
                 phone,
                 handicap: Number(handicap) || 0,
                 gender: gender || 'male',

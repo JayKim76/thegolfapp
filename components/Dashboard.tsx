@@ -1,11 +1,15 @@
 
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { MOCK_ROUNDS, MOCK_HISTORY } from '../constants';
+import { MOCK_ROUNDS, MOCK_HISTORY, MOCK_MEMBERS, MOCK_CLUB } from '../constants';
 
 const Dashboard: React.FC = () => {
   const navigate = useNavigate();
   const nextRound = MOCK_ROUNDS[0];
+  const avgHandicap = MOCK_MEMBERS.length
+    ? (MOCK_MEMBERS.reduce((sum, m) => sum + m.handicap, 0) / MOCK_MEMBERS.length).toFixed(1)
+    : '-';
+  const topMember = [...MOCK_MEMBERS].sort((a, b) => a.handicap - b.handicap)[0];
 
   return (
     <div className="p-4">
@@ -16,8 +20,8 @@ const Dashboard: React.FC = () => {
             <div className="absolute -bottom-1 -right-1 w-4 h-4 rounded-full bg-primary border-2 border-background" />
           </div>
           <div>
-            <h1 className="text-lg font-bold">안녕하세요, 김민수님</h1>
-            <p className="text-xs text-gray-500 font-medium">Gold Member</p>
+            <h1 className="text-lg font-bold">{MOCK_CLUB.name}</h1>
+            <p className="text-xs text-gray-500 font-medium">관리자 · 전체 회원 관리</p>
           </div>
         </div>
         <button className="w-10 h-10 flex items-center justify-center rounded-full bg-surface hover:bg-surface-light transition-colors">
@@ -29,18 +33,18 @@ const Dashboard: React.FC = () => {
         <div className="bg-surface rounded-2xl p-4 shadow-sm">
           <div className="flex items-center gap-2 mb-2">
             <span className="material-symbols-outlined text-primary text-xl filled">sports_golf</span>
-            <span className="text-sm font-medium text-gray-400">핸디캡</span>
+            <span className="text-sm font-medium text-gray-400">전체 회원</span>
           </div>
-          <div className="text-3xl font-bold">12</div>
-          <p className="text-[10px] text-gray-500 mt-1">상위 15%</p>
+          <div className="text-3xl font-bold">{MOCK_MEMBERS.length}</div>
+          <p className="text-[10px] text-gray-500 mt-1">관리자가 등록·관리</p>
         </div>
         <div className="bg-surface rounded-2xl p-4 shadow-sm">
           <div className="flex items-center gap-2 mb-2">
             <span className="material-symbols-outlined text-primary text-xl filled">emoji_events</span>
-            <span className="text-sm font-medium text-gray-400">최고 점수</span>
+            <span className="text-sm font-medium text-gray-400">평균 핸디캡</span>
           </div>
-          <div className="text-3xl font-bold">78</div>
-          <p className="text-[10px] text-primary font-bold mt-1">New Record!</p>
+          <div className="text-3xl font-bold">{avgHandicap}</div>
+          <p className="text-[10px] text-primary font-bold mt-1">최저: {topMember?.name} {topMember?.handicap}</p>
         </div>
       </section>
 
@@ -49,7 +53,7 @@ const Dashboard: React.FC = () => {
            <span className="material-symbols-outlined text-6xl">analytics</span>
         </div>
         <div className="relative z-10">
-          <p className="text-xs font-medium text-gray-400 mb-1">평균 스코어 (최근 5경기)</p>
+          <p className="text-xs font-medium text-gray-400 mb-1">모임 평균 스코어 (최근 기록)</p>
           <div className="flex items-baseline gap-2">
             <span className="text-4xl font-bold">82.4</span>
             <span className="text-xs font-bold text-primary flex items-center">

@@ -18,7 +18,7 @@ const slides = [
     {
         title: "실시간 스코어 추적",
         englishTitle: "Real-time Score Tracking",
-        desc: "홀별로 간편하게 점수를 입력하고\n플레이 중 실시간 분석을 확인하세요.",
+        desc: "관리자가 전체 회원의 스코어를 입력하고\n모임 기록을 한 곳에서 확인하세요.",
         Icon: Activity,
         cardGradient: ['#8B5CF6', '#4C1D95'] as const,
     },
@@ -141,7 +141,7 @@ export default function OnboardingScreen() {
 
                     {/* Bottom Link */}
                     <View className="flex-row justify-center items-center pb-2">
-                        <Text className="text-gray-400 text-sm">Already a member? </Text>
+                        <Text className="text-gray-400 text-sm">모임 관리자이신가요? </Text>
                         <TouchableOpacity onPress={() => navigation.navigate('Login')}>
                             <Text className="text-[#00FF00] font-bold text-sm">Log in</Text>
                         </TouchableOpacity>

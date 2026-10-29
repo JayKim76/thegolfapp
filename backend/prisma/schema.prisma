@@ -10,10 +10,21 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model Club {
+  id          Int      @id @default(autoincrement())
+  name        String
+  description String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  members     Member[]
+}
+
 model Member {
   id          Int      @id @default(autoincrement())
   name        String
-  email       String   @unique
+  email       String?  @unique
+  clubId      Int      @default(1)
+  club        Club     @relation(fields: [clubId], references: [id])
   handicap    Float    @default(0)
   phone       String?
   joinDate    DateTime @default(now())

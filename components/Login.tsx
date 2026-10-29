@@ -16,19 +16,19 @@ const Login: React.FC = () => {
       <div className="px-6 py-4">
         <div className="relative h-56 rounded-2xl overflow-hidden bg-cover bg-center mb-8" style={{ backgroundImage: 'linear-gradient(rgba(0,0,0,0) 50%, rgba(17,33,17,1) 100%), url("https://picsum.photos/seed/golfhero/800/600")' }}>
           <div className="absolute bottom-6 left-6">
-            <h1 className="text-3xl font-bold tracking-tight">Welcome Back</h1>
-            <p className="text-gray-300 text-sm">Ready to hit the green?</p>
+            <h1 className="text-3xl font-bold tracking-tight">모임 관리자</h1>
+            <p className="text-gray-300 text-sm">전체 회원을 관리하는 관리자 전용 로그인입니다</p>
           </div>
         </div>
 
-        <h2 className="text-2xl font-bold mb-6">Perfect Your Swing</h2>
+        <h2 className="text-2xl font-bold mb-6">관리자 로그인</h2>
 
         <div className="space-y-4">
           <div className="space-y-1.5">
-            <label className="text-sm font-medium text-gray-300 ml-1">Email Address</label>
+            <label className="text-sm font-medium text-gray-300 ml-1">관리자 ID</label>
             <div className="relative">
               <span className="absolute left-4 top-1/2 -translate-y-1/2 material-symbols-outlined text-gray-500">mail</span>
-              <input type="email" placeholder="user@example.com" className="w-full h-14 pl-12 pr-4 bg-surface-light border-none rounded-xl focus:ring-2 focus:ring-primary transition-all" />
+              <input type="email" placeholder="admin" className="w-full h-14 pl-12 pr-4 bg-surface-light border-none rounded-xl focus:ring-2 focus:ring-primary transition-all" />
             </div>
           </div>
 
@@ -45,7 +45,7 @@ const Login: React.FC = () => {
           </div>
 
           <button onClick={() => navigate('/dashboard')} className="w-full h-14 bg-primary text-black font-bold text-lg rounded-xl flex items-center justify-center gap-2 shadow-lg shadow-primary/20 mt-4 active:scale-[0.98] transition-transform">
-            Log In <span className="material-symbols-outlined">login</span>
+            관리자로 로그인 <span className="material-symbols-outlined">login</span>
           </button>
         </div>
 
@@ -69,7 +69,7 @@ const Login: React.FC = () => {
         </div>
 
         <p className="text-center text-gray-500 text-sm pb-8">
-          Don't have an account? <button className="text-primary font-bold hover:underline">Sign up</button>
+          회원은 개별 계정을 만들지 않습니다. 회원 등록은 관리자가 회원 관리 메뉴에서 직접 합니다.
         </p>
       </div>
     </div>

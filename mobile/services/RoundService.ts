@@ -15,8 +15,9 @@ export interface RoundPlayer {
 // Mock Data Storage (Empty for production-like behavior, will use API)
 let MOCK_ROUNDS: Round[] = [];
 
-// Replace with your machine's local IP if testing on physical device
-const API_URL = 'http://192.168.10.107:3000/api/rounds';
+import { API_BASE, AuthService } from './AuthService';
+
+const API_URL = `${API_BASE}/api/rounds`;
 
 export const RoundService = {
     /**
@@ -45,6 +46,7 @@ export const RoundService = {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
+                    ...AuthService.authHeaders(),
                 },
                 body: JSON.stringify(round),
             });
