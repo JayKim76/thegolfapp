@@ -68,11 +68,13 @@ export default function ScoreInputScreen() {
         const result = await ImagePicker.launchImageLibraryAsync({
             mediaTypes: ImagePicker.MediaTypeOptions.Images,
             allowsEditing: true,
-            quality: 1,
+            quality: 0.7,
+            base64: true,
         });
 
         if (!result.canceled) {
-            processImage(result.assets[0].uri);
+            const asset = result.assets[0];
+            processImage(asset.uri, asset.base64 ?? undefined, asset.mimeType);
         }
     };
 
@@ -85,23 +87,25 @@ export default function ScoreInputScreen() {
 
         const result = await ImagePicker.launchCameraAsync({
             allowsEditing: true,
-            quality: 1,
+            quality: 0.7,
+            base64: true,
         });
 
         if (!result.canceled) {
-            processImage(result.assets[0].uri);
+            const asset = result.assets[0];
+            processImage(asset.uri, asset.base64 ?? undefined, asset.mimeType);
         }
     };
 
-    const processImage = async (uri: string) => {
+    const processImage = async (uri: string, base64?: string, mimeType?: string) => {
         setScannedImage(uri);
         setIsScanning(true);
         try {
-            const result = await OCRService.scanScorecard(uri);
+            const result = await OCRService.scanScorecard(uri, base64, mimeType);
             setOcrResult(result);
             setScoreData(result.players);
-        } catch (error) {
-            Alert.alert('오류', '스코어카드 인식에 실패했습니다.');
+        } catch (error: any) {
+            Alert.alert('인식 실패', error?.message || '스코어카드 인식에 실패했습니다.');
         } finally {
             setIsScanning(false);
         }
@@ -116,7 +120,7 @@ export default function ScoreInputScreen() {
         try {
             await RoundService.saveRound({
                 date: ocrResult.date,
-                courseName: '스카이 72 GC', // Default or select from course list later
+                courseName: ocrResult.courseName || '스카이 72 GC', // recognized name first, fallback until a course picker exists
                 players: scoreData.map(p => ({
                     name: p.originalName,
                     memberId: p.matchedMemberId,
