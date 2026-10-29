@@ -7,3 +7,8 @@ node_modules
 # Local databases must never be committed (may contain member personal data)
 *.db
 *.db-journal
+
+# local run artifacts
+dist/
+logs/
+backups/

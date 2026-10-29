@@ -1,3 +1,4 @@
+import 'dotenv/config'; // MUST stay first: loads backend/.env before auth/ocr modules read process.env
 import express from 'express';
 import cors from 'cors';
 import { adminLogin, requireAdmin } from './auth';

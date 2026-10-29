@@ -1,0 +1,18 @@
+[Unit]
+Description=thegolfapp backend (club admin API)
+After=network.target
+
+[Service]
+Type=simple
+# Adjust the user and paths to your server.
+User=www-data
+WorkingDirectory=/opt/thegolfapp/backend
+ExecStart=/usr/bin/node dist/app.js
+Restart=always
+RestartSec=3
+Environment=NODE_ENV=production
+# Secrets (DATABASE_URL, ADMIN_*, GEMINI_API_KEY) live in backend/.env,
+# which the app loads itself. Do not put secret values in this unit file.
+
+[Install]
+WantedBy=multi-user.target
