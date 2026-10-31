@@ -31,3 +31,4 @@ View your app in AI Studio: https://ai.studio/apps/drive/1Fyq3PzOKzW8J6oXz1pt6Wd
 - API: https://thegolfapp-api.vercel.app (Vercel 프로젝트 thegolfapp-api, Root: backend)
 - 웹 콘솔: https://thegolfapp-oh75.vercel.app (Vercel 프로젝트 thegolfapp-web)
 - DB: Supabase PostgreSQL (풀러 연결, 환경변수는 Vercel 프로젝트에 설정)
+- 관리자 로그인 계정은 Vercel 환경변수 `ADMIN_ID`/`ADMIN_PASSWORD`로 관리한다 (변경 후 재배포 필요)
