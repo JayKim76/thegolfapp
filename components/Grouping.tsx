@@ -38,6 +38,42 @@ function buildGroups(selected: ApiMember[], mode: Mode): GroupResult {
     groups[idx].push(m);
   });
 
+  // Balance pass: the plain snake draft leaves the short groups (when the
+  // headcount is not a multiple of 4) without a high-handicap player, so
+  // their averages land several strokes low. Swap pairs between groups
+  // while any swap narrows the spread of the chosen metric. Deterministic:
+  // fixed scan order, first improving swap wins, repeat until stable.
+  const metric = (g: ApiMember[]) => {
+    const sum = g.reduce((s, m) => s + m.handicap, 0);
+    return mode === 'sum' ? sum : g.length ? sum / g.length : 0;
+  };
+  const spread = () => {
+    const vals = groups.map(metric);
+    return Math.max(...vals) - Math.min(...vals);
+  };
+  let best = spread();
+  let improved = true;
+  let guard = 0;
+  while (improved && guard++ < 100) {
+    improved = false;
+    outer: for (let a = 0; a < groups.length; a++) {
+      for (let b = a + 1; b < groups.length; b++) {
+        for (let i = 0; i < groups[a].length; i++) {
+          for (let j = 0; j < groups[b].length; j++) {
+            [groups[a][i], groups[b][j]] = [groups[b][j], groups[a][i]];
+            const s = spread();
+            if (s < best - 1e-9) {
+              best = s;
+              improved = true;
+              break outer;
+            }
+            [groups[a][i], groups[b][j]] = [groups[b][j], groups[a][i]];
+          }
+        }
+      }
+    }
+  }
+
   return {
     groups: groups.map((g, i) => {
       const sum = g.reduce((s, m) => s + m.handicap, 0);
