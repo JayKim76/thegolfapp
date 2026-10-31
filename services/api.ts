@@ -82,6 +82,18 @@ export const api = {
     getCourses: () =>
         req<{ id: number; name: string; location: string; distance?: string | null }[]>('/api/courses'),
     getRounds: () => req<ApiRoundSession[]>('/api/rounds'),
+    // One member's full score history + summary (GET /api/rounds/member/:id)
+    getMemberRounds: (memberId: number) =>
+        req<{
+            memberId: number;
+            rounds: { id: number; date: string; courseName: string; score: number }[];
+            stats: {
+                count: number;
+                avgScore: number | null;
+                bestScore: number | null;
+                recentScores: number[];
+            };
+        }>(`/api/rounds/member/${memberId}`),
     createRound: (payload: {
         date: string;
         courseName: string;

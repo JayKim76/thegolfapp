@@ -1,7 +1,9 @@
 import React, { useEffect, useMemo, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { api, ApiMember } from '../services/api';
 
 const MemberList: React.FC = () => {
+  const navigate = useNavigate();
   const [members, setMembers] = useState<ApiMember[]>([]);
   const [search, setSearch] = useState('');
   const [filter, setFilter] = useState('전체');
@@ -132,25 +134,32 @@ const MemberList: React.FC = () => {
         {!loading && visible.length === 0 && <p className="text-sm text-gray-500">회원이 없습니다. 오른쪽 위 + 버튼으로 등록하세요.</p>}
         {visible.map((member) => (
           <div key={member.id} className="flex items-center gap-4 bg-surface p-3 rounded-2xl border border-white/5 shadow-sm">
-            <div className="relative shrink-0">
-              <img src={`https://picsum.photos/seed/golf${member.id}/200`} alt={member.name} className="w-14 h-14 rounded-full border-2 border-transparent" />
-              <div className={`absolute bottom-0 right-0 w-3.5 h-3.5 rounded-full border-2 border-surface ${member.status === 'active' ? 'bg-primary' : 'bg-gray-500'}`} />
-            </div>
-            <div className="flex-1 min-w-0">
-              <div className="flex items-center gap-2">
-                <h3 className="font-bold text-base truncate">{member.name}</h3>
-                <span className="px-2 py-0.5 rounded-md bg-primary/10 text-primary text-[10px] font-bold border border-primary/20">
-                  HDCP {member.handicap}
-                </span>
-                {member.type === '티칭프로' && (
-                  <span className="px-2 py-0.5 rounded-md bg-yellow-400/10 text-yellow-400 text-[10px] font-bold border border-yellow-400/20">PRO</span>
-                )}
+            <div
+              className="flex items-center gap-4 flex-1 min-w-0 cursor-pointer"
+              onClick={() => navigate(`/members/${member.id}`)}
+              title="상세 · 전체 스코어 보기"
+            >
+              <div className="relative shrink-0">
+                <img src={`https://picsum.photos/seed/golf${member.id}/200`} alt={member.name} className="w-14 h-14 rounded-full border-2 border-transparent" />
+                <div className={`absolute bottom-0 right-0 w-3.5 h-3.5 rounded-full border-2 border-surface ${member.status === 'active' ? 'bg-primary' : 'bg-gray-500'}`} />
               </div>
-              <p className="text-xs text-gray-500 mt-0.5 truncate">
-                {member.type} · {member.gender === 'female' ? '여자' : '남자'}{member.phone ? ` · ${member.phone}` : ''}
-              </p>
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center gap-2">
+                  <h3 className="font-bold text-base truncate">{member.name}</h3>
+                  <span className="px-2 py-0.5 rounded-md bg-primary/10 text-primary text-[10px] font-bold border border-primary/20">
+                    HDCP {member.handicap}
+                  </span>
+                  {member.type === '티칭프로' && (
+                    <span className="px-2 py-0.5 rounded-md bg-yellow-400/10 text-yellow-400 text-[10px] font-bold border border-yellow-400/20">PRO</span>
+                  )}
+                </div>
+                <p className="text-xs text-gray-500 mt-0.5 truncate">
+                  {member.type} · {member.gender === 'female' ? '여자' : '남자'}{member.phone ? ` · ${member.phone}` : ''}
+                </p>
+              </div>
+              <span className="material-symbols-outlined text-gray-600 shrink-0">chevron_right</span>
             </div>
-            <button onClick={() => handleDelete(member)} className="w-10 h-10 flex items-center justify-center text-gray-500 hover:text-red-400" title="회원 삭제">
+            <button onClick={() => handleDelete(member)} className="w-10 h-10 flex items-center justify-center text-gray-500 hover:text-red-400 shrink-0" title="회원 삭제">
               <span className="material-symbols-outlined">delete</span>
             </button>
           </div>

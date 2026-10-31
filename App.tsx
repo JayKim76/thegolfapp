@@ -5,6 +5,7 @@ import Onboarding from './components/Onboarding';
 import Login from './components/Login';
 import Dashboard from './components/Dashboard';
 import MemberList from './components/MemberList';
+import MemberDetail from './components/MemberDetail';
 import Grouping from './components/Grouping';
 import ScoreInput from './components/ScoreInput';
 import Settings from './components/Settings';
@@ -66,6 +67,7 @@ const App: React.FC = () => {
           <Route path="/login" element={<Login />} />
           <Route path="/dashboard" element={<RequireAuth><Dashboard /></RequireAuth>} />
           <Route path="/members" element={<RequireAuth><MemberList /></RequireAuth>} />
+          <Route path="/members/:id" element={<RequireAuth><MemberDetail /></RequireAuth>} />
           <Route path="/grouping" element={<RequireAuth><Grouping /></RequireAuth>} />
           <Route path="/score-input" element={<RequireAuth><ScoreInput /></RequireAuth>} />
           <Route path="/course-guide" element={<RequireAuth><CourseGuide /></RequireAuth>} />
