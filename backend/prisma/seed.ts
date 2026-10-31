@@ -72,6 +72,17 @@ async function main() {
         console.log(`Created ${byDate.size} round sessions.`);
     }
 
+    // Postgres: explicit ids (club 1, member ids from the data file) do not
+    // advance SERIAL sequences. Without this, the first API-created member
+    // would collide with a seeded id. (SQLite handled this automatically.)
+    try {
+        await prisma.$executeRawUnsafe(`SELECT setval(pg_get_serial_sequence('"Club"', 'id'), (SELECT MAX(id) FROM "Club"))`);
+        await prisma.$executeRawUnsafe(`SELECT setval(pg_get_serial_sequence('"Member"', 'id'), (SELECT MAX(id) FROM "Member"))`);
+        console.log('Sequences advanced past seeded ids.');
+    } catch {
+        // Non-Postgres datasource: nothing to do.
+    }
+
     console.log('Seeding completed.');
 }
 
