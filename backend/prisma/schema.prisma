@@ -2,12 +2,17 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 generator client {
-  provider = "prisma-client-js"
+  provider      = "prisma-client-js"
+  // native: local dev; rhel-openssl-3.0.x: Vercel serverless runtime
+  binaryTargets = ["native", "rhel-openssl-3.0.x"]
 }
 
 datasource db {
-  provider = "sqlite"
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  // Runtime (Vercel): Supabase TRANSACTION pooler (port 6543, ?pgbouncer=true)
+  url       = env("DATABASE_URL")
+  // Migrations/seed: Supabase SESSION pooler (port 5432) or direct connection
+  directUrl = env("DIRECT_URL")
 }
 
 model Club {

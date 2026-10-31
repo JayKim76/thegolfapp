@@ -48,3 +48,10 @@
 
 - 웹(루트) 앱은 목업 데이터 기반 프로토타입이라 대시보드 수치도 목업에서 계산한다.
   실연동 시 `/api/club/stats`를 그대로 쓰면 된다.
+
+## 웹 운영 전환 (2026-10-31)
+
+- DB가 SQLite에서 **Supabase PostgreSQL**로 바뀌었다. Prisma 스키마 provider와 마이그레이션이 교체됐고(`20261031000000_init_postgres`), 실행은 풀러 기준으로 한다 (DATABASE_URL=트랜잭션 풀러 6543+pgbouncer, DIRECT_URL=세션 풀러 5432).
+- 백엔드는 Vercel 서버리스로도, 로컬 서버로도 뜬다. `src/app.ts`가 앱을 export하고, 로컬 진입점은 `src/server.ts`, Vercel 진입점은 `api/index.ts`다.
+- 루트 웹 앱이 목업 프로토타입에서 **실연동 관리자 콘솔**로 바뀌었다. 전 화면이 API를 쓴다(로그인 가드 포함). 브라우저에서 Gemini를 직접 호출하던 조편성·코스가이드는 각각 로컬 균형 편성(스네이크 드래프트)과 `/api/courses` 목록으로 교체해 키 노출을 없앴다.
+- 배포 절차와 환경변수는 `docs/install/서버-세팅.md`가 기준이다.

@@ -5,7 +5,7 @@ module.exports = {
         {
             name: 'thegolfapp',
             cwd: __dirname,
-            script: 'dist/app.js',
+            script: 'dist/server.js',
             instances: 1,
             autorestart: true,
             watch: false,

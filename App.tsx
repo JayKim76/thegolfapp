@@ -9,6 +9,13 @@ import Grouping from './components/Grouping';
 import ScoreInput from './components/ScoreInput';
 import Settings from './components/Settings';
 import CourseGuide from './components/CourseGuide';
+import { isLoggedIn } from './services/api';
+
+// Admin pages require a login token (single-admin app). Onboarding and
+// Login stay public; everything else bounces to /login when logged out.
+const RequireAuth: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  return isLoggedIn() ? <>{children}</> : <Navigate to="/login" replace />;
+};
 
 const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const location = useLocation();
@@ -57,12 +64,12 @@ const App: React.FC = () => {
         <Routes>
           <Route path="/" element={<Onboarding />} />
           <Route path="/login" element={<Login />} />
-          <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/members" element={<MemberList />} />
-          <Route path="/grouping" element={<Grouping />} />
-          <Route path="/score-input" element={<ScoreInput />} />
-          <Route path="/course-guide" element={<CourseGuide />} />
-          <Route path="/settings" element={<Settings />} />
+          <Route path="/dashboard" element={<RequireAuth><Dashboard /></RequireAuth>} />
+          <Route path="/members" element={<RequireAuth><MemberList /></RequireAuth>} />
+          <Route path="/grouping" element={<RequireAuth><Grouping /></RequireAuth>} />
+          <Route path="/score-input" element={<RequireAuth><ScoreInput /></RequireAuth>} />
+          <Route path="/course-guide" element={<RequireAuth><CourseGuide /></RequireAuth>} />
+          <Route path="/settings" element={<RequireAuth><Settings /></RequireAuth>} />
           <Route path="*" element={<Navigate to="/" />} />
         </Routes>
       </Layout>

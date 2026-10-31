@@ -3,7 +3,7 @@ export interface Member {
   id: string;
   name: string;
   handicap: number;
-  type: '정회원' | '티칭프로' | '일반회원' | '휴면회원';
+  type: string;
   status: 'active' | 'inactive';
   lastRound?: string;
   joinDate?: string;

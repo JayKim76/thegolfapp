@@ -10,7 +10,6 @@ import golfCourseRoutes from './routes/golfcourse.routes';
 import roundRoutes from './routes/round.routes';
 
 const app = express();
-const PORT = process.env.PORT || 3000;
 
 app.use(cors());
 app.use(express.json({ limit: '12mb' })); // scorecard photos arrive as base64
@@ -33,6 +32,7 @@ app.get('/', (req, res) => {
     res.send('The Golf App Backend is running!');
 });
 
-app.listen(PORT, () => {
-    console.log(`Server is running on http://localhost:${PORT}`);
-});
+// The app is exported for two runtimes:
+// - local/self-hosted: src/server.ts calls listen()
+// - Vercel serverless: api/index.ts re-exports this app as the handler
+export default app;
