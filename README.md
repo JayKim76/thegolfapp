@@ -25,3 +25,9 @@ View your app in AI Studio: https://ai.studio/apps/drive/1Fyq3PzOKzW8J6oXz1pt6Wd
 - 서버 세팅: [docs/install/서버-세팅.md](docs/install/서버-세팅.md) — 환경변수 전체 목록, pm2/systemd 상시 실행, 방화벽·HTTPS
 - 유지보수: [docs/install/유지보수.md](docs/install/유지보수.md) — DB 백업/복원, 업데이트 절차, 계정·키 교체, 장애 대응
 - 구조 설명: [docs/club-admin-model.md](docs/club-admin-model.md)
+
+## 배포 상태
+
+- API: https://thegolfapp-api.vercel.app (Vercel 프로젝트 thegolfapp-api, Root: backend)
+- 웹 콘솔: https://thegolfapp-oh75.vercel.app (Vercel 프로젝트 thegolfapp-web)
+- DB: Supabase PostgreSQL (풀러 연결, 환경변수는 Vercel 프로젝트에 설정)
